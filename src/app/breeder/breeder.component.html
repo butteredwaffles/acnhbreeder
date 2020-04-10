@@ -22,9 +22,9 @@
 </form>
 
   <table>
-      <tr *ngFor="let row of grid">
+      <tr *ngFor="let row of grid" cdkDrop>
           <td *ngFor="let flower of row">
-              <p *ngIf="flower.type != 'black'">{{flower.type}}</p>
+              <p *ngIf="flower.type != 'blank'">{{flower.type}}</p>
           </td>
       </tr>
   </table>
@@ -32,7 +32,7 @@
 <h3>Seed Bags</h3>
 <table>
     <tr *ngFor="let row of seed_spliced">
-        <td class="seed-tds" *ngFor="let flower of row">
+        <td class="seed-tds" *ngFor="let flower of row" cdkDrag>
             <img src="{{ flower.image_loc }}">
         </td>
     </tr>

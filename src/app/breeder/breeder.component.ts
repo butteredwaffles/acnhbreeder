@@ -74,7 +74,6 @@ export class BreederComponent implements OnInit {
     this.gridColumns = gridOptionsData.columns;
     
     this.grid = flower.generateGrid(this.gridRows, this.gridColumns);
-    
   }
 
   //so it doesnt gets hecced on refresh
@@ -92,7 +91,7 @@ export class BreederComponent implements OnInit {
       rows: [5, [Validators.required, Validators.min(3), Validators.max(10)]],
       columns: [5, [Validators.required, Validators.min(3), Validators.max(10)]]
     });
-
+    console.log(this.grid);
     //flower.findNeighbors(this.grid, 0, 0);
   }
 
