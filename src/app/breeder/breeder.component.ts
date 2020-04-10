@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Flower, FlowerType} from '../flower';
+import { Flower, FlowerType, generateGrid} from '../flower';
+import { FormBuilder } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
@@ -8,18 +9,18 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./breeder.component.scss']
 })
 export class BreederComponent implements OnInit {
-  all_flowers: Object[];
-  flower: Flower = {
-    id: 1,
-    type: FlowerType.Rose,
-    red_gene: 0,
-    yellow_gene: 0,
-    white_gene: 0,
-    rose_gene: 0,
-    color: 'white',
-    generation: 0
-  };
-  constructor(private http: HttpClient) { }
+  all_possible_flowers: Object[];
+  gridOptions;
+  gridRows: number = 5;
+  gridColumns: number = 5;
+  grid;
+  constructor(private http: HttpClient, private formBuilder: FormBuilder) {
+    this.gridOptions = this.formBuilder.group({
+      rows: 5,
+      columns: 5
+    });
+  }
+  
 
   loadCSV(): void {
     let text;
@@ -33,13 +34,20 @@ export class BreederComponent implements OnInit {
             let info = data.split(',');
             let type = FlowerType[flower_keys.indexOf(info[0])];
             start_index += 1;
-            all_flowers.push(new Flower(start_index, type, info[1], info[2], info[3], info[4], info[5], 0));
+            all_flowers.push(new Flower(start_index, type, info[1], info[2], info[3], info[4], info[5].toLowerCase(), 0));
           }
-          this.all_flowers = all_flowers;
+          this.all_possible_flowers = all_flowers;
         });
   }
 
+  onSubmit(gridOptionsData): void {
+    this.gridRows = gridOptionsData.rows;
+    this.gridColumns = gridOptionsData.columns;
+    this.grid = generateGrid(this.gridRows, this.gridColumns);
+  }
+
   ngOnInit(): void {
-    this.loadCSV()
+    this.loadCSV();
+    this.grid = generateGrid(this.gridRows, this.gridColumns);
   }
 }

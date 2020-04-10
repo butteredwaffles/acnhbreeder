@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { TypeCheckCompiler } from '@angular/compiler/src/view_compiler/type_check_compiler';
 // Generation is 0 if the plant is from a seed bag. If the plant is not a rose, rose_gene is 0.
 export class Flower {
@@ -30,6 +31,18 @@ export enum FlowerType {
     Lily,
     Hyacinth,
     Windflower,
-    Mum
+    Mum,
+    Blank
 }
 
+
+export function generateGrid(rows: number, columns: number) {
+    let grid = [];
+    for (let i = 0; i < rows; i++) {
+        grid.push([])
+        for (let j = 0; j < columns; j++) {
+            grid[i].push({'type': FlowerType.Blank});
+        }
+    }
+    return grid;
+}
