@@ -1,10 +1,10 @@
 <form [formGroup]="gridOptions" (ngSubmit)="onSubmit(gridOptions.value)">
     <div>
         <label for="rows">Rows</label>
-        <input id="rows" type="number"   min="3" max="10" formControlName="rows" numeric-only required>
+        <input id="rows" type="number" min="3" max="10" formControlName="rows" numeric-only required>
         <!-- flowerValidation -->
         <div *ngIf="submitted && flowerValidation.rows.errors">
-            Invalid Rows Number
+            There must be a minimum of three rows and a maximum of ten.
         </div>
     </div>
 
@@ -13,18 +13,27 @@
         <input id="columns" type="number" min="3" max="10" formControlName="columns" numeric-only required >
          <!-- flowerValidation -->
         <div *ngIf="submitted && flowerValidation.columns.errors">
-            Invalid Columns Number
+            There must be a minimum of three columns and a maximum of ten.
         </div>
     </div>
     
     <!-- just.... worry about validation later... no worry now-->
     <button class="button" type="submit">Update Grid</button>  
-  </form>
+</form>
 
   <table>
       <tr *ngFor="let row of grid">
           <td *ngFor="let flower of row">
-              <p *ngIf="flower.type != 8">{{flower.type}}</p>
+              <p *ngIf="flower.type != 'black'">{{flower.type}}</p>
           </td>
       </tr>
   </table>
+
+<h3>Seed Bags</h3>
+<table>
+    <tr *ngFor="let row of seed_spliced">
+        <td class="seed-tds" *ngFor="let flower of row">
+            <img src="{{ flower.image_loc }}">
+        </td>
+    </tr>
+</table>

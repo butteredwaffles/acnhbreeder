@@ -10,8 +10,10 @@ export class Flower {
     rose_gene: number;
     color: string;
     generation: number;
+    isSeedBag: boolean;
+    image_loc: string;
 
-    constructor(id, type, red_gene, yellow_gene, white_gene, rose_gene, color, generation) {
+    constructor(id, type, red_gene, yellow_gene, white_gene, rose_gene, color, generation, isSeedBag) {
         this.id = id;
         this.type = type;
         this.red_gene = red_gene;
@@ -20,19 +22,21 @@ export class Flower {
         this.rose_gene = rose_gene;
         this.color = color;
         this.generation = generation;
+        this.isSeedBag = isSeedBag;
+        this.image_loc = "assets/images/" + color + "_" + this.type + ".png";
     }
 }
 
 export enum FlowerType {
-    Rose,
-    Tulip,
-    Pansy,
-    Cosmos,
-    Lily,
-    Hyacinth,
-    Windflower,
-    Mum,
-    Blank
+    Rose = "rose",
+    Tulip = "tulip",
+    Pansy = "pansy",
+    Cosmos = "cosmos",
+    Lily = "lily",
+    Hyacinth = "hyacinth",
+    Windflower = "windflower",
+    Mum = "mum",
+    Blank = "blank"
 }
 
 
@@ -45,4 +49,14 @@ export function generateGrid(rows: number, columns: number) {
         }
     }
     return grid;
+}
+
+export function findNeighbors(grid, x, y) {
+    for (let i = Math.max(0, x-1); i <= Math.min(x+1, grid.length); i++) {
+        for (let j = Math.max(0, y-1); j <= Math.min(y+1, grid[0].length); j++) {
+            if (i != x || j != y) {
+                console.log(i, j);
+            }
+        }
+    }
 }
