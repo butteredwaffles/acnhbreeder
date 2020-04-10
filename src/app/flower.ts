@@ -41,7 +41,7 @@ export function generateGrid(rows: number, columns: number) {
     for (let i = 0; i < rows; i++) {
         grid.push([])
         for (let j = 0; j < columns; j++) {
-            grid[i].push({'type': FlowerType.Blank});
+            grid[i].push({'type': FlowerType.Mum});
         }
     }
     return grid;

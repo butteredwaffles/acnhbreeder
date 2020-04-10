@@ -1,13 +1,23 @@
 <form [formGroup]="gridOptions" (ngSubmit)="onSubmit(gridOptions.value)">
     <div>
         <label for="rows">Rows</label>
-        <input id="rows" type="number" formControlName="rows" numeric-only required>
+        <input id="rows" type="number"   min="3" max="10" formControlName="rows" numeric-only required>
+        <!-- flowerValidation -->
+        <div *ngIf="submitted && flowerValidation.rows.errors">
+            Invalid Rows Number
+        </div>
     </div>
+
     <div>
         <label for="columns">Columns</label>
-        <input id="columns" type="number" min="3" max="10" formControlName="columns" numeric-only required>
+        <input id="columns" type="number" min="3" max="10" formControlName="columns" numeric-only required >
+         <!-- flowerValidation -->
+        <div *ngIf="submitted && flowerValidation.columns.errors">
+            Invalid Columns Number
+        </div>
     </div>
-    <!-- just.... worry about validation later-->
+    
+    <!-- just.... worry about validation later... no worry now-->
     <button class="button" type="submit">Update Grid</button>  
   </form>
 

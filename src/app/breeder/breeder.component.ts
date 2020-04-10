@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Flower, FlowerType, generateGrid} from '../flower';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
@@ -8,18 +8,17 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './breeder.component.html',
   styleUrls: ['./breeder.component.scss']
 })
+
 export class BreederComponent implements OnInit {
   all_possible_flowers: Object[];
   gridOptions;
   gridRows: number = 5;
   gridColumns: number = 5;
   grid;
-  constructor(private http: HttpClient, private formBuilder: FormBuilder) {
-    this.gridOptions = this.formBuilder.group({
-      rows: 5,
-      columns: 5
-    });
-  }
+  submitted;
+
+  //empty constructor, moved to OnInit
+  constructor(private http: HttpClient, private formBuilder: FormBuilder) {}
   
 
   loadCSV(): void {
@@ -41,13 +40,41 @@ export class BreederComponent implements OnInit {
   }
 
   onSubmit(gridOptionsData): void {
+
+    //so the user wont get "error uwu uwu uwu" as soon as they type a fuckle
+    this.submitted = true;
+
+    // stop here if form is invalid
+    if (this.gridOptions.invalid) {
+        return;
+    }
+
     this.gridRows = gridOptionsData.rows;
     this.gridColumns = gridOptionsData.columns;
+    
     this.grid = generateGrid(this.gridRows, this.gridColumns);
+    
   }
+
+  //so it doesnt gets hecced on refresh
+  onReset() {
+    this.submitted = false;
+    this.gridOptions.reset();
+}
 
   ngOnInit(): void {
     this.loadCSV();
-    this.grid = generateGrid(this.gridRows, this.gridColumns);
+    //grid will be generated on submit to validate user input
+    //this.grid = generateGrid(this.gridRows, this.gridColumns);
+
+    // loads validation and default values, makes validators required
+    this.gridOptions = this.formBuilder.group({
+      rows: [5, [Validators.required, Validators.min(3), Validators.max(10)]],
+      columns: [5, [Validators.required, Validators.min(3), Validators.max(10)]]
+    });
   }
+
+  //get Form for validation bullhecc in html, ppl usually use just "f" tho
+  get flowerValidation () { return this.gridOptions.controls; }
+  
 }
