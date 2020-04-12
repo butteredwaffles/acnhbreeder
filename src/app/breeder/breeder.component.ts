@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import * as flower from '../flower';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { range } from 'rxjs';
 
 @Component({
   selector: 'app-breeder',
@@ -30,12 +31,10 @@ export class BreederComponent implements OnInit {
     this.http.get("assets/flowerdata.csv", {responseType: 'text'})
         .subscribe(res => {
           text = res.split('\n').slice(1);
-          let start_index = 1;
           for (let data of text) {
             let info = data.split(',');
             let type = flower.FlowerType[info[0]];
-            start_index += 1;
-            all_flowers.push(new flower.Flower(start_index, type, info[1], info[2], info[3], info[4], info[5].toLowerCase(), 0, info[6] == 1 ? true : false));
+            all_flowers.push(new flower.Flower(type, parseInt(info[1]), parseInt(info[2]), parseInt(info[3]), parseInt(info[4]), info[5].toLowerCase(), 0, info[6] == 1 ? true : false));
           }
           this.all_possible_flowers = all_flowers;
           this.loadSeedBags();
@@ -91,7 +90,6 @@ export class BreederComponent implements OnInit {
       rows: [5, [Validators.required, Validators.min(3), Validators.max(10)]],
       columns: [5, [Validators.required, Validators.min(3), Validators.max(10)]]
     });
-    console.log(this.grid);
     //flower.findNeighbors(this.grid, 0, 0);
   }
 
