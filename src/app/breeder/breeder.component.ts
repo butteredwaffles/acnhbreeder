@@ -22,8 +22,8 @@ export class BreederComponent implements OnInit {
   grid;
   submitted;
   curr_generation: number = 0;
-  focused_wrapper;
-  focused_flower;
+  focused_index;
+  focused_flower = flower.blankFlower;
 
   //empty constructor, moved to OnInit
   constructor(private http: HttpClient, private formBuilder: FormBuilder) {}
@@ -127,12 +127,14 @@ export class BreederComponent implements OnInit {
     this.grid[x][y] = new flower.Flower({attrs: newFlower.attributes});
   }
 
-  removeFocusedFlower(x, y) {
-    console.log("unga bunga");
+  putFlowerInFocus(x, y) {
+    this.focused_index = [x, y];
+    this.focused_flower = this.grid[x][y];
   }
 
-  putFlowerInFocus() {
-    console.log("unga bunga");
+  removeFocusedFlower() {
+    this.focused_flower = flower.blankFlower;
+    this.grid[this.focused_index[0]][this.focused_index[1]] = flower.blankFlower;
   }
 
   highlightNeighbors() {

@@ -105,7 +105,7 @@ export enum FlowerType {
     Blank = "blank"
 }
 
-let blankFlower = new Flower({type: FlowerType.Blank, red_gene: 0, yellow_gene: 0, white_gene: 0, rose_gene: 0, color: "none", generation: 0, isSeedBag: false});
+export let blankFlower = new Flower({type: FlowerType.Blank, red_gene: 0, yellow_gene: 0, white_gene: 0, rose_gene: 0, color: "none", generation: 0, isSeedBag: false});
 export function generateGrid(rows: number, columns: number) {
     let grid = [];
     for (let i = 0; i < rows; i++) {
