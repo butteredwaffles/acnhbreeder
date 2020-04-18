@@ -49,7 +49,7 @@ export class Flower {
     }
 
     equals(genes, other) {
-        return genes.red === other.red && genes.yellow === other.yellow && genes.white == other.white && genes.rose === genes.rose;
+        return genes.red === other.red && genes.yellow === other.yellow && genes.white == other.white && genes.rose === other.rose;
     }
 
     breed(other: Flower, all_flowers: Flower[], parent_gen: number): Flower {
@@ -58,25 +58,26 @@ export class Flower {
         for (var key in other.genes) {
             let par1, par2;
             switch (this.genes[key]) {
-                case 0:
+                case 2:
                     par1 = 1;
                     break;
                 case 1:
-                    par1 = Math.floor(Math.random() * Math.floor(2));
+                    par1 = Math.floor(Math.random() * 2);
                     break;
-                case 2:
+                case 0:
                     par1 = 0;
                     break;
             }
 
             switch (other.genes[key]) {
-                case 0:
+                case 2:
                     par2 = 1;
                     break;
                 case 1:
-                    par2 = Math.floor(Math.random() * Math.floor(2));
+                    
+                    par2 = Math.floor(Math.random() * 2);
                     break;
-                case 2:
+                case 0:
                     par2 = 0;
                     break;
             }
