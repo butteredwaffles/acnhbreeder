@@ -22,6 +22,8 @@ export class BreederComponent implements OnInit {
   grid;
   submitted;
   curr_generation: number = 0;
+  focused_index;
+  focused_flower = flower.blankFlower;
 
   //empty constructor, moved to OnInit
   constructor(private http: HttpClient, private formBuilder: FormBuilder) {}
@@ -125,6 +127,16 @@ export class BreederComponent implements OnInit {
     this.grid[x][y] = new flower.Flower({attrs: newFlower.attributes});
   }
 
+  putFlowerInFocus(x, y) {
+    this.focused_index = [x, y];
+    this.focused_flower = this.grid[x][y];
+  }
+
+  removeFocusedFlower() {
+    this.focused_flower = flower.blankFlower;
+    this.grid[this.focused_index[0]][this.focused_index[1]] = flower.blankFlower;
+  }
+
   highlightNeighbors() {
     for (let x = 0; x < this.gridRows; x++) {
       for (let y = 0; y < this.gridColumns; y++) {
@@ -143,6 +155,7 @@ export class BreederComponent implements OnInit {
 
   pollinate() {
     let pollispaces = {};
+    let flowerBred = false;
     for (let x = 0; x < this.gridRows; x++) {
       for (let y = 0; y < this.gridColumns; y++) {
         if (this.grid[x][y].type !== flower.FlowerType.Blank) {
@@ -163,7 +176,6 @@ export class BreederComponent implements OnInit {
         }
       }
     }
-    console.log(pollispaces);
     for (let space in pollispaces) {
       let sp = space.split(',');
       let x = parseInt(sp[0]);
@@ -178,7 +190,7 @@ export class BreederComponent implements OnInit {
             if (this.grid[x][y].type === flower.FlowerType.Blank) {
               if (Math.random() <= this.breed_success_rate) {
                 this.grid[x][y] = par1.breed(par2, this.all_possible_flowers, this.curr_generation);
-                console.log(this.grid[x][y]);
+                flowerBred = true;
               }
               par1.has_bred = true;
               par2.has_bred = true;
@@ -188,7 +200,9 @@ export class BreederComponent implements OnInit {
       }
     }
     // prepare things for next session
-    this.curr_generation += 1;
+    if (flowerBred) {
+      this.curr_generation += 1;
+    }
     for (let x = 0; x < this.gridRows; x++) {
       for (let y = 0; y < this.gridColumns; y++) {
         this.grid[x][y].has_bred = false;
