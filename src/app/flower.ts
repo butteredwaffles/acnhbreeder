@@ -14,6 +14,7 @@ export class Flower {
     generation: number;
     isSeedBag: boolean;
     image_loc: string;
+    has_bred: boolean = false;
 
     constructor(options: {attrs?: {}, type?: FlowerType, red_gene?: number, yellow_gene?: number, white_gene?: number, rose_gene?: number, color?: string, generation?: number, isSeedBag?: boolean}) {
         if (options.attrs !== undefined) {
@@ -57,31 +58,29 @@ export class Flower {
         for (var key in other.genes) {
             let par1, par2;
             switch (this.genes[key]) {
-                // Double recessive
-                case 2:
+                case 0:
                     par1 = 1;
                     break;
-                // One dominant one recessive
                 case 1:
                     par1 = Math.floor(Math.random() * Math.floor(2));
                     break;
-                // Double dominant
-                case 0:
+                case 2:
                     par1 = 0;
                     break;
             }
 
             switch (other.genes[key]) {
-                case 2:
+                case 0:
                     par2 = 1;
                     break;
                 case 1:
                     par2 = Math.floor(Math.random() * Math.floor(2));
                     break;
-                case 0:
+                case 2:
                     par2 = 0;
                     break;
             }
+            console.log(key, par1, par2);
             new_genes[key] = par1+par2;
         }
         for (let fl of all_flowers) {

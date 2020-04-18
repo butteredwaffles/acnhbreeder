@@ -12,6 +12,7 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop';
 })
 
 export class BreederComponent implements OnInit {
+  breed_success_rate = .5;
   all_possible_flowers: flower.Flower[] = [];
   seed_flowers: flower.Flower[] = [];
   seed_spliced: flower.Flower[][] = [];
@@ -20,6 +21,7 @@ export class BreederComponent implements OnInit {
   gridColumns: number = 5;
   grid;
   submitted;
+  curr_generation: number = 0;
 
   //empty constructor, moved to OnInit
   constructor(private http: HttpClient, private formBuilder: FormBuilder) {}
@@ -38,6 +40,7 @@ export class BreederComponent implements OnInit {
             all_flowers.push(new flower.Flower({type: type, red_gene: parseInt(info[1]), yellow_gene: parseInt(info[2]), white_gene: parseInt(info[3]), rose_gene: parseInt(info[4]), color: info[5].toLowerCase(), generation: 0, isSeedBag: info[6] == 1 ? true : false}));
           }
           this.all_possible_flowers = all_flowers;
+          console.log(all_flowers);
           this.loadSeedBags();
         });
   }
@@ -85,6 +88,7 @@ export class BreederComponent implements OnInit {
   ngOnInit(): void {
     this.loadCSV();
     this.grid = flower.generateGrid(this.gridRows, this.gridColumns);
+    this.curr_generation = 0;
 
     // loads validation and default values, makes validators required
     this.gridOptions = this.formBuilder.group({
@@ -133,6 +137,61 @@ export class BreederComponent implements OnInit {
             }
           }
         }
+      }
+    }
+  }
+
+  pollinate() {
+    let pollispaces = {};
+    for (let x = 0; x < this.gridRows; x++) {
+      for (let y = 0; y < this.gridColumns; y++) {
+        if (this.grid[x][y].type !== flower.FlowerType.Blank) {
+          let neighbors = flower.findNeighbors(this.grid, x, y);
+          for (let n of neighbors) {
+            let i = n[0];
+            let j = n[1];
+            if (i < this.gridRows && j < this.gridColumns) {
+              if (this.grid[i][j].type === flower.FlowerType.Blank) {
+                let istring = i.toString() + ',' + j.toString();
+                if (pollispaces[istring] === undefined) {
+                  pollispaces[istring] = [];
+                }
+                pollispaces[istring].push({pollinated_by: this.grid[x][y]});
+              }
+            }
+          }
+        }
+      }
+    }
+    console.log(pollispaces);
+    for (let space in pollispaces) {
+      let sp = space.split(',');
+      let x = parseInt(sp[0]);
+      let y = parseInt(sp[1]);
+      let values = pollispaces[space];
+      if (values.length > 1) {
+        for (let n = 0; n < values.length-1; n++) {
+          let par1: flower.Flower = values[n].pollinated_by;
+          let par2: flower.Flower = values[n+1].pollinated_by;
+          if (par1.type === par2.type && !par1.has_bred && !par2.has_bred) {
+            // this spot is free and ready to be breeded
+            if (this.grid[x][y].type === flower.FlowerType.Blank) {
+              if (Math.random() <= this.breed_success_rate) {
+                this.grid[x][y] = par1.breed(par2, this.all_possible_flowers, this.curr_generation);
+                console.log(this.grid[x][y]);
+              }
+              par1.has_bred = true;
+              par2.has_bred = true;
+            }
+          }
+        }
+      }
+    }
+    // prepare things for next session
+    this.curr_generation += 1;
+    for (let x = 0; x < this.gridRows; x++) {
+      for (let y = 0; y < this.gridColumns; y++) {
+        this.grid[x][y].has_bred = false;
       }
     }
   }
