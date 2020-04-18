@@ -13,10 +13,10 @@ export class Flower {
     constructor(type, red_gene, yellow_gene, white_gene, rose_gene, color, generation, isSeedBag) {
         this.type = type;
         this.genes = {
-            "red": red_gene,
-            "yellow": yellow_gene,
-            "white": white_gene,
-            "rose": rose_gene
+            red: red_gene,
+            yellow: yellow_gene,
+            white: white_gene,
+            rose: rose_gene
         };
         this.color = color;
         this.generation = generation;
@@ -25,7 +25,7 @@ export class Flower {
     }
 
     equals(genes, other) {
-        return genes["red"] === other["red"] && genes["yellow"] === other["yellow"] && genes["white"] == other["white"] && genes["rose"] === genes["rose"];
+        return genes.red === other.red && genes.yellow === other.yellow && genes.white == other.white && genes.rose === genes.rose;
     }
 
     breed(other: Flower, all_flowers: Flower[], parent_gen: number): Flower {

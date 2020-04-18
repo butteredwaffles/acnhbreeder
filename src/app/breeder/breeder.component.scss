@@ -1,0 +1,19 @@
+.seed-bags {
+    display: grid;
+    grid-template-columns: 60px 60px 60px 60px 60px 60px;
+}
+
+.breeding-cell {
+    width: 100px;
+    height: 100px;
+    border: 1px double black;
+    text-align: center;
+}
+
+.breeding-cell img {
+    height: 70px;
+}
+
+.seed-bags img {
+    height: 50px;
+}

@@ -21,19 +21,19 @@
     <button class="button" type="submit">Update Grid</button>  
 </form>
 
-  <table>
-      <tr *ngFor="let row of grid" cdkDrop>
-          <td *ngFor="let flower of row">
-              <p *ngIf="flower.type != 'blank'">{{flower.type}}</p>
+  <table class="breeding-area">
+      <tr *ngFor="let row of grid by index; let pIndex=index;">
+          <td *ngFor="let flower of row; let dIndex=index;" id="area-{{pIndex+dIndex*5}}" class="breeding-cell" (dragover)="allowDrop($event)" (drop)="onFlowerDropped($event)">
+              
           </td>
       </tr>
   </table>
 
 <h3>Seed Bags</h3>
-<table>
-    <tr *ngFor="let row of seed_spliced">
-        <td class="seed-tds" *ngFor="let flower of row" cdkDrag>
-            <img src="{{ flower.image_loc }}">
-        </td>
-    </tr>
-</table>
+<div class="seed-bags">
+    <div class="grid-item" *ngFor="let flower of seed_flowers; let eleIndex=index;" id="bag-{{eleIndex}}" draggable=true (dragstart)="onFlowerDragged($event)"
+    attr.data-type="{{ flower.type }}" attr.data-genes="{{flower.genes.red}}{{flower.genes.yellow}}{{flower.genes.white}}{{flower.genes.rose}}"
+    attr.data-color="{{flower.color}}" attr.data-generation="{{flower.generation}}" attr.data-isSeedBag="{{flower.isSeedBag}}">
+        <img class="flower-imgs" src="{{ flower.image_loc }}">
+    </div>
+</div>

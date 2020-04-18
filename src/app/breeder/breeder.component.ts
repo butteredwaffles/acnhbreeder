@@ -3,6 +3,7 @@ import * as flower from '../flower';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { range } from 'rxjs';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-breeder',
@@ -95,5 +96,28 @@ export class BreederComponent implements OnInit {
 
   //get Form for validation bullhecc in html, ppl usually use just "f" tho
   get flowerValidation () { return this.gridOptions.controls; }
+
+  onFlowerDragged(event: any) {
+    console.log("picked up");
+    event.dataTransfer.setData("flower-id", event.target.parentElement.id);
+  }
+
+  allowDrop(event: any) {
+    event.preventDefault();
+  }
+
+  onFlowerDropped(event: any) {
+    event.preventDefault();
+    let flower = document.getElementById(event.dataTransfer.getData("flower-id")).cloneNode(true);
+    let ogcell = document.getElementById(event.target.id);
+    flower['setAttribute']('id', event.target.id);
+    console.log(ogcell);
+    try {
+      ogcell.replaceChild(flower, ogcell.children[0]);
+    }
+    catch (ex) {
+      ogcell.appendChild(flower);
+    }
+  }
   
 }
