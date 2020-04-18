@@ -1,46 +1,48 @@
-<form [formGroup]="gridOptions" (ngSubmit)="onSubmit(gridOptions.value)">
-    <div>
-        <label for="rows">Rows</label>
-        <input id="rows" type="number" min="3" max="10" formControlName="rows" numeric-only required>
-        <!-- flowerValidation -->
-        <div *ngIf="submitted && flowerValidation.rows.errors">
-            There must be a minimum of three rows and a maximum of ten.
-        </div>
-    </div>
-
-    <div>
-        <label for="columns">Columns</label>
-        <input id="columns" type="number" min="3" max="10" formControlName="columns" numeric-only required >
-         <!-- flowerValidation -->
-        <div *ngIf="submitted && flowerValidation.columns.errors">
-            There must be a minimum of three columns and a maximum of ten.
-        </div>
-    </div>
-    
-    <!-- just.... worry about validation later... no worry now-->
-    <button class="button" type="submit">Update Grid</button>  
-</form>
-
-<table class="breeding-area">
-    <tr *ngFor="let row of grid by index; let pIndex=index;">
-        <td *ngFor="let flower of row; let dIndex=index;" id="area-{{pIndex}}-{{dIndex}}" class="breeding-cell" (dragover)="allowDrop($event)" (drop)="onFlowerDropped($event)">
-            <div *ngIf="flower.type !== 'blank'"
-                attr.data-type="{{ flower.type }}" attr.data-genes="{{flower.genes.red}}{{flower.genes.yellow}}{{flower.genes.white}}{{flower.genes.rose}}"
-                attr.data-color="{{flower.color}}" attr.data-generation="{{flower.generation}}" attr.data-isSeedBag="{{flower.isSeedBag}}">
-                <img class="flower-imgs" src="{{ flower.image_loc }}">
+<body>
+    <form [formGroup]="gridOptions" (ngSubmit)="onSubmit(gridOptions.value)">
+        <div>
+            <label for="rows">Rows</label>
+            <input id="rows" type="number" min="3" max="10" formControlName="rows" numeric-only required>
+            <!-- flowerValidation -->
+            <div *ngIf="submitted && flowerValidation.rows.errors">
+                There must be a minimum of three rows and a maximum of ten.
             </div>
-        </td>
-    </tr>
-</table>
+        </div>
 
-<button mat-stroked-button (click)="highlightNeighbors()">Highlight Neighbors</button>
-<button mat-stroked-button (click)="pollinate()">Pollinate</button>
+        <div>
+            <label for="columns">Columns</label>
+            <input id="columns" type="number" min="3" max="10" formControlName="columns" numeric-only required >
+            <!-- flowerValidation -->
+            <div *ngIf="submitted && flowerValidation.columns.errors">
+                There must be a minimum of three columns and a maximum of ten.
+            </div>
+        </div>
+        
+        <!-- just.... worry about validation later... no worry now-->
+        <button class="button" type="submit">Update Grid</button>  
+    </form>
 
-<h3>Seed Bags</h3>
-<div class="seed-bags">
-    <div class="grid-item" *ngFor="let flower of seed_flowers; let eleIndex=index;" id="bag-{{eleIndex}}" draggable=true (dragstart)="onFlowerDragged($event)"
-    attr.data-type="{{ flower.type }}" attr.data-genes="{{flower.genes.red}}{{flower.genes.yellow}}{{flower.genes.white}}{{flower.genes.rose}}"
-    attr.data-color="{{flower.color}}" attr.data-generation="{{flower.generation}}" attr.data-isSeedBag="{{flower.isSeedBag}}">
-        <img class="flower-imgs" src="{{ flower.image_loc }}">
+    <table class="breeding-area">
+        <tr *ngFor="let row of grid by index; let pIndex=index;">
+            <td *ngFor="let flower of row; let dIndex=index;" id="area-{{pIndex}}-{{dIndex}}" class="breeding-cell" (dragover)="allowDrop($event)" (drop)="onFlowerDropped($event)">
+                <div *ngIf="flower.type !== 'blank'"
+                    attr.data-type="{{ flower.type }}" attr.data-genes="{{flower.genes.red}}{{flower.genes.yellow}}{{flower.genes.white}}{{flower.genes.rose}}"
+                    attr.data-color="{{flower.color}}" attr.data-generation="{{flower.generation}}" attr.data-isSeedBag="{{flower.isSeedBag}}">
+                    <img class="flower-imgs" src="{{ flower.image_loc }}">
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <button mat-stroked-button (click)="highlightNeighbors()">Highlight Neighbors</button>
+    <button mat-stroked-button (click)="pollinate()">Pollinate</button>
+
+    <h3>Seed Bags</h3>
+    <div class="seed-bags">
+        <div class="grid-item" *ngFor="let flower of seed_flowers; let eleIndex=index;" id="bag-{{eleIndex}}" draggable=true (dragstart)="onFlowerDragged($event)"
+        attr.data-type="{{ flower.type }}" attr.data-genes="{{flower.genes.red}}{{flower.genes.yellow}}{{flower.genes.white}}{{flower.genes.rose}}"
+        attr.data-color="{{flower.color}}" attr.data-generation="{{flower.generation}}" attr.data-isSeedBag="{{flower.isSeedBag}}">
+            <img class="flower-imgs" src="{{ flower.image_loc }}">
+        </div>
     </div>
-</div>
+</body>
