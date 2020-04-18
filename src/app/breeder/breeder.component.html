@@ -29,12 +29,12 @@
 </form>
 
 <table class="breeding-area">
-    <tr *ngFor="let row of grid by index; let pIndex=index;">
+    <tr *ngFor="let row of grid; let pIndex=index;">
         <td *ngFor="let flower of row; let dIndex=index;" id="area-{{pIndex}}-{{dIndex}}" class="breeding-cell" (dragover)="allowDrop($event)" (drop)="onFlowerDropped($event)">
             <div *ngIf="flower.type !== 'blank'"
                 attr.data-type="{{ flower.type }}" attr.data-genes="{{flower.genes.red}}{{flower.genes.yellow}}{{flower.genes.white}}{{flower.genes.rose}}"
                 attr.data-color="{{flower.color}}" attr.data-generation="{{flower.generation}}" attr.data-isSeedBag="{{flower.isSeedBag}}">
-                <img (click)="putFlowerInFocus(pIndex, dIndex)" class="flower-imgs" src="{{ flower.image_loc }}">
+                <img (draggable)=true (dragstart)="onFlowerDragged($event)" (click)="putFlowerInFocus(pIndex, dIndex)" class="flower-imgs" src="{{ flower.image_loc }}">
             </div>
         </td>
     </tr>
@@ -57,7 +57,7 @@
 
 <h3>Seed Bags</h3>
 <div class="seed-bags">
-    <div class="grid-item" *ngFor="let flower of seed_flowers; let eleIndex=index;" id="bag-{{eleIndex}}" draggable=true (dragstart)="onFlowerDragged($event)"
+    <div class="grid-item" *ngFor="let flower of seed_flowers; let eleIndex=index;" id="bags-{{eleIndex}}" draggable=true (dragstart)="onFlowerDragged($event)"
     attr.data-type="{{ flower.type }}" attr.data-genes="{{flower.genes.red}}{{flower.genes.yellow}}{{flower.genes.white}}{{flower.genes.rose}}"
     attr.data-color="{{flower.color}}" attr.data-generation="{{flower.generation}}" attr.data-isSeedBag="{{flower.isSeedBag}}">
         <img class="flower-imgs" src="{{ flower.image_loc }}">

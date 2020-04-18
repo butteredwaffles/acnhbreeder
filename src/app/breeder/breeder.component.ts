@@ -100,7 +100,14 @@ export class BreederComponent implements OnInit {
   get flowerValidation () { return this.gridOptions.controls; }
 
   onFlowerDragged(event: any) {
-    event.dataTransfer.setData("flower-id", event.target.parentElement.id);
+    let id = event.target.parentElement.id;
+    let isFromGrid = false;
+    if (id === "") {
+      id = event.target.parentElement.parentElement.id;
+      isFromGrid = true;
+    }
+    event.dataTransfer.setData("flower-id", id);
+    event.dataTransfer.setData("drag-type", isFromGrid ? "area" : "bags");
   }
 
   allowDrop(event: any) {
@@ -108,8 +115,16 @@ export class BreederComponent implements OnInit {
   }
 
   onFlowerDropped(event: any) {
+    let deletionFlag = false;
     event.preventDefault();
-    let newFlower = document.getElementById(event.dataTransfer.getData("flower-id"));
+    let newFlower;
+    if (event.dataTransfer.getData("drag-type") == "bags") {
+      newFlower = document.getElementById(event.dataTransfer.getData("flower-id"));
+    }
+    else {
+      newFlower = document.getElementById(event.dataTransfer.getData("flower-id")).children[0];
+      deletionFlag = true;
+    }
     let id = event.target.id;
     let id_ele = event.target;
     // ensures that no matter where the user drags the flower wil be replaced
@@ -118,9 +133,15 @@ export class BreederComponent implements OnInit {
       id = id_ele.id;
     }
     let indexes = id.slice(5).split('-');
-    let x: number = parseInt(indexes[0]);
-    let y: number = parseInt(indexes[1]);
+    let x = parseInt(indexes[0]);
+    let y = parseInt(indexes[1]);
     this.grid[x][y] = new flower.Flower({attrs: newFlower.attributes});
+    if (deletionFlag) {
+      let ind = event.dataTransfer.getData("flower-id").slice(5).split('-');
+      let i = parseInt(ind[0]);
+      let j = parseInt(ind[1]);
+      this.grid[i][j] = flower.blankFlower;
+    }
   }
 
   putFlowerInFocus(x, y) {
