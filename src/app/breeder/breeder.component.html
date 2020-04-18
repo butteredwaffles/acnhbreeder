@@ -27,7 +27,7 @@
             <div *ngIf="flower.type !== 'blank'"
                 attr.data-type="{{ flower.type }}" attr.data-genes="{{flower.genes.red}}{{flower.genes.yellow}}{{flower.genes.white}}{{flower.genes.rose}}"
                 attr.data-color="{{flower.color}}" attr.data-generation="{{flower.generation}}" attr.data-isSeedBag="{{flower.isSeedBag}}">
-                <img class="flower-imgs" src="{{ flower.image_loc }}">
+                <img (click)="putFlowerInFocus(pIndex, dIndex)" class="flower-imgs" src="{{ flower.image_loc }}">
             </div>
         </td>
     </tr>
@@ -35,6 +35,18 @@
 
 <button mat-stroked-button (click)="highlightNeighbors()">Highlight Neighbors</button>
 <button mat-stroked-button (click)="pollinate()">Pollinate</button>
+
+<div id="detailed-view" *ngIf="focused_flower !== underinfed">
+    <img class="flower-imgs" src="{{ focused_flower.image_loc }}">
+    <p>Red: {{focused_flower.genes.red}}</p>
+    <p>Yellow: {{focused_flower.genes.yellow}}</p>
+    <p>White: {{focused_flower.genes.white}}</p>
+    <p>Rose: {{ffocused_flower.genes.rose}}</p>
+    <p>Generation: {{focused_flower.generation}}</p>
+    <p>From Seed Bag? {{focused_flower.isSeedBag ? "Yes" : "No"}}</p>
+    <button mat-stroked-button (click)="removeFocusedFlower()">Remove Flower</button>
+</div>
+
 
 <h3>Seed Bags</h3>
 <div class="seed-bags">
