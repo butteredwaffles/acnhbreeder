@@ -84,7 +84,7 @@ export class Flower {
             console.log(key, par1, par2);
             new_genes[key] = par1+par2;
         }
-        for (let fl of all_flowers) {
+        for (let fl of all_flowers.filter(fl => fl.type === this.type)) {
             if (this.equals(new_genes, fl.genes)) {
                 new_color = fl.color;
                 break;
