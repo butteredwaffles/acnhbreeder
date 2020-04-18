@@ -35,7 +35,7 @@ export class BreederComponent implements OnInit {
           for (let data of text) {
             let info = data.split(',');
             let type = flower.FlowerType[info[0]];
-            all_flowers.push(new flower.Flower(type, parseInt(info[1]), parseInt(info[2]), parseInt(info[3]), parseInt(info[4]), info[5].toLowerCase(), 0, info[6] == 1 ? true : false));
+            all_flowers.push(new flower.Flower({type: type, red_gene: parseInt(info[1]), yellow_gene: parseInt(info[2]), white_gene: parseInt(info[3]), rose_gene: parseInt(info[4]), color: info[5].toLowerCase(), generation: 0, isSeedBag: info[6] == 1 ? true : false}));
           }
           this.all_possible_flowers = all_flowers;
           this.loadSeedBags();
@@ -98,7 +98,6 @@ export class BreederComponent implements OnInit {
   get flowerValidation () { return this.gridOptions.controls; }
 
   onFlowerDragged(event: any) {
-    console.log("picked up");
     event.dataTransfer.setData("flower-id", event.target.parentElement.id);
   }
 
@@ -108,15 +107,33 @@ export class BreederComponent implements OnInit {
 
   onFlowerDropped(event: any) {
     event.preventDefault();
-    let flower = document.getElementById(event.dataTransfer.getData("flower-id")).cloneNode(true);
-    let ogcell = document.getElementById(event.target.id);
-    flower['setAttribute']('id', event.target.id);
-    console.log(ogcell);
-    try {
-      ogcell.replaceChild(flower, ogcell.children[0]);
+    let newFlower = document.getElementById(event.dataTransfer.getData("flower-id"));
+    let id = event.target.id;
+    let id_ele = event.target;
+    // ensures that no matter where the user drags the flower wil be replaced
+    while (id == "") {
+      id_ele = id_ele.parentElement;
+      id = id_ele.id;
     }
-    catch (ex) {
-      ogcell.appendChild(flower);
+    let indexes = id.slice(5).split('-');
+    let x: number = parseInt(indexes[0]);
+    let y: number = parseInt(indexes[1]);
+    this.grid[x][y] = new flower.Flower({attrs: newFlower.attributes});
+  }
+
+  highlightNeighbors() {
+    for (let x = 0; x < this.gridRows; x++) {
+      for (let y = 0; y < this.gridColumns; y++) {
+        if (this.grid[x][y].type !== flower.FlowerType.Blank) {
+          let neighbors = flower.findNeighbors(this.grid, x, y);
+          let neighborColor = '#'+(Math.random()*0xFFFFFF<<0).toString(16);
+          for (let n of neighbors) {
+            if (n[0] < this.gridRows && n[1] < this.gridColumns) {
+              document.getElementById('area-' + n[0].toString() + '-' + n[1].toString()).style.backgroundColor = neighborColor;
+            }
+          }
+        }
+      }
     }
   }
   

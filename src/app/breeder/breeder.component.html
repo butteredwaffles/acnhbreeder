@@ -21,13 +21,19 @@
     <button class="button" type="submit">Update Grid</button>  
 </form>
 
-  <table class="breeding-area">
-      <tr *ngFor="let row of grid by index; let pIndex=index;">
-          <td *ngFor="let flower of row; let dIndex=index;" id="area-{{pIndex+dIndex*5}}" class="breeding-cell" (dragover)="allowDrop($event)" (drop)="onFlowerDropped($event)">
-              
-          </td>
-      </tr>
-  </table>
+<table class="breeding-area">
+    <tr *ngFor="let row of grid by index; let pIndex=index;">
+        <td *ngFor="let flower of row; let dIndex=index;" id="area-{{pIndex}}-{{dIndex}}" class="breeding-cell" (dragover)="allowDrop($event)" (drop)="onFlowerDropped($event)">
+            <div *ngIf="flower.type !== 'blank'"
+                attr.data-type="{{ flower.type }}" attr.data-genes="{{flower.genes.red}}{{flower.genes.yellow}}{{flower.genes.white}}{{flower.genes.rose}}"
+                attr.data-color="{{flower.color}}" attr.data-generation="{{flower.generation}}" attr.data-isSeedBag="{{flower.isSeedBag}}">
+                <img class="flower-imgs" src="{{ flower.image_loc }}">
+            </div>
+        </td>
+    </tr>
+</table>
+
+<button mat-stroked-button (click)="highlightNeighbors()">Highlight Neighbors</button>
 
 <h3>Seed Bags</h3>
 <div class="seed-bags">
