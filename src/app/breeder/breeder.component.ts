@@ -2,8 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import * as flower from '../flower';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { range } from 'rxjs';
-import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-breeder',
@@ -15,13 +13,12 @@ export class BreederComponent implements OnInit {
   breed_success_rate = .5;
   all_possible_flowers: flower.Flower[] = [];
   seed_flowers: flower.Flower[] = [];
-  seed_spliced: flower.Flower[][] = [];
   gridOptions;
   gridRows: number = 5;
   gridColumns: number = 5;
   grid;
   submitted;
-  curr_generation: number = 0;
+  curr_generation: number = 1;
   focused_index;
   focused_flower = flower.blankFlower;
 
@@ -39,7 +36,7 @@ export class BreederComponent implements OnInit {
           for (let data of text) {
             let info = data.split(',');
             let type = flower.FlowerType[info[0]];
-            all_flowers.push(new flower.Flower({type: type, red_gene: parseInt(info[1]), yellow_gene: parseInt(info[2]), white_gene: parseInt(info[3]), rose_gene: parseInt(info[4]), color: info[5].toLowerCase(), generation: 0, isSeedBag: info[6] == 1 ? true : false}));
+            all_flowers.push(new flower.Flower({type: type, red_gene: parseInt(info[1]), yellow_gene: parseInt(info[2]), white_gene: parseInt(info[3]), rose_gene: parseInt(info[4]), color: info[5].toLowerCase(), generation: 1, isSeedBag: info[6] == 1 ? true : false}));
           }
           this.all_possible_flowers = all_flowers;
           console.log(all_flowers);
@@ -55,14 +52,6 @@ export class BreederComponent implements OnInit {
       }
     }
     this.seed_flowers = seed_flws;
-
-    let index = 0;
-    let size = 6;
-    while (index < seed_flws.length) {
-      this.seed_spliced.push(seed_flws.slice(index, index + size));
-      index += size;
-    }
-    console.log(this.seed_spliced);
   }
 
   onSubmit(gridOptionsData): void {
@@ -77,25 +66,32 @@ export class BreederComponent implements OnInit {
 
     this.gridRows = gridOptionsData.rows;
     this.gridColumns = gridOptionsData.columns;
+    this.breed_success_rate = gridOptionsData.breedrate;
     
-    this.grid = flower.generateGrid(this.gridRows, this.gridColumns);
+    this.resetGrid();
   }
 
   //so it doesnt gets hecced on refresh
   onReset() {
     this.submitted = false;
     this.gridOptions.reset();
-}
+  }
+
+  resetGrid() {
+    this.grid = flower.generateGrid(this.gridRows, this.gridColumns);
+    this.curr_generation = 1;
+    this.focused_flower = flower.blankFlower;
+  }
 
   ngOnInit(): void {
     this.loadCSV();
-    this.grid = flower.generateGrid(this.gridRows, this.gridColumns);
-    this.curr_generation = 0;
+    this.resetGrid();
 
     // loads validation and default values, makes validators required
     this.gridOptions = this.formBuilder.group({
-      rows: [5, [Validators.required, Validators.min(3), Validators.max(10)]],
-      columns: [5, [Validators.required, Validators.min(3), Validators.max(10)]]
+      rows: [5, [Validators.required, Validators.min(3), Validators.max(20)]],
+      columns: [5, [Validators.required, Validators.min(3), Validators.max(20)]],
+      breedrate: [.5, [Validators.required, Validators.min(0.01), Validators.max(1.0)]]
     });
     //flower.findNeighbors(this.grid, 0, 0);
   }

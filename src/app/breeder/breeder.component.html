@@ -1,7 +1,7 @@
 <form [formGroup]="gridOptions" (ngSubmit)="onSubmit(gridOptions.value)">
     <div>
         <label for="rows">Rows</label>
-        <input id="rows" type="number" min="3" max="10" formControlName="rows" numeric-only required>
+        <input id="rows" type="number" min="3" max="20" formControlName="rows" numeric-only required>
         <!-- flowerValidation -->
         <div *ngIf="submitted && flowerValidation.rows.errors">
             There must be a minimum of three rows and a maximum of ten.
@@ -10,10 +10,17 @@
 
     <div>
         <label for="columns">Columns</label>
-        <input id="columns" type="number" min="3" max="10" formControlName="columns" numeric-only required >
+        <input id="columns" type="number" min="3" max="20" formControlName="columns" numeric-only required>
          <!-- flowerValidation -->
         <div *ngIf="submitted && flowerValidation.columns.errors">
             There must be a minimum of three columns and a maximum of ten.
+        </div>
+    </div>
+    <div>
+        <label for="breedrate">Breeding Success Rate</label>
+        <input id="breedrate" type="number" min="0.01" max="1.00" formControlName="breedrate" numeric-only required>
+        <div *ngIf="submitted && flowerValidation.breedrate.errors">
+            Breeding success rate must be between 0.01 and 1.00.
         </div>
     </div>
     

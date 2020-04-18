@@ -74,7 +74,6 @@ export class Flower {
                     par2 = 1;
                     break;
                 case 1:
-                    
                     par2 = Math.floor(Math.random() * 2);
                     break;
                 case 0:
