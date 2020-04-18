@@ -36,12 +36,12 @@
 <button mat-stroked-button (click)="highlightNeighbors()">Highlight Neighbors</button>
 <button mat-stroked-button (click)="pollinate()">Pollinate</button>
 
-<div id="detailed-view" *ngIf="focused_flower.type != 'blank'">
+<div id="detailed-view" *ngIf="focused_flower.type != 'blank' && focused_flower.genes !== {}">
     <img class="flower-imgs" src="{{ focused_flower.image_loc }}">
-    <p>Red: {{focused_flower.genes.red}}</p>
-    <p>Yellow: {{focused_flower.genes.yellow}}</p>
-    <p>White: {{focused_flower.genes.white}}</p>
-    <p>Rose: {{focused_flower.genes.rose}}</p>
+    <p>Red: {{focused_flower.genes["red"]}}</p>
+    <p>Yellow: {{focused_flower.genes["yellow"]}}</p>
+    <p>White: {{focused_flower.genes["white"]}}</p>
+    <p>Rose: {{focused_flower.genes["rose"]}}</p>
     <p>Generation: {{focused_flower.generation}}</p>
     <p>From Seed Bag? {{focused_flower.isSeedBag ? "Yes" : "No"}}</p>
     <button mat-stroked-button (click)="removeFocusedFlower()">Remove Flower</button>
