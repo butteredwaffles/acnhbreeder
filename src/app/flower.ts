@@ -16,6 +16,7 @@ export class Flower {
     image_loc: string;
     has_bred: boolean = false;
     children: Flower[] = [];
+    parents: Flower[] = [];
     x: number;
     y: number;
 
@@ -84,7 +85,6 @@ export class Flower {
                     par2 = 0;
                     break;
             }
-            console.log(key, par1, par2);
             new_genes[key] = par1+par2;
         }
         for (let fl of all_flowers.filter(fl => fl.type === this.type)) {

@@ -40,7 +40,9 @@
         <mat-grid-list cols="{{gridColumns}}" rowHeight="fit" class="breeding-area">
                 <ng-container *ngFor="let row of grid; let pIndex=index;" >
 
-                <mat-grid-tile *ngFor="let flower of row; let dIndex=index;" id="area-{{pIndex}}-{{dIndex}}" class="breeding-cell" (dragover)="allowDrop($event)" (drop)="onFlowerDropped($event)">
+                <mat-grid-tile *ngFor="let flower of row; let dIndex=index;" id="area-{{pIndex}}-{{dIndex}}" 
+                [ngClass]="{'highlighted': focused_flower.x === pIndex && focused_flower.y === dIndex, 'highlighted-child': focused_flower.children.indexOf(flower) >= 0, 'highlighted-parent': focused_flower.parents.indexOf(flower) >= 0}" class="breeding-cell" 
+                (dragover)="allowDrop($event)" (drop)="onFlowerDropped($event)">
                         <div *ngIf="flower.type !== 'blank'"
                         attr.data-type="{{ flower.type }}" attr.data-genes="{{flower.genes.red}}{{flower.genes.yellow}}{{flower.genes.white}}{{flower.genes.rose}}"
                         attr.data-color="{{flower.color}}" attr.data-generation="{{flower.generation}}" attr.data-isSeedBag="{{flower.isSeedBag}}">
@@ -73,19 +75,34 @@
                             <td>{{focused_flower.genes["rose"]}}</td>
                         </tr>
                     </table>
-                    <mat-expansion-panel>
-                        <mat-expansion-panel-header>
-                            <mat-panel-title>Direct Children</mat-panel-title>
-                            <mat-panel-description>Click for more info.</mat-panel-description>
-                        </mat-expansion-panel-header>
-                        <mat-list class="children-wrapper" *ngIf="focused_flower.children.length > 0">
-                            <mat-list-item *ngFor="let child of focused_flower.children" class="focused-children" (click)="putFlowerInFocus(child.x, child.y)">
-                                <img matListAvatar src="{{child.image_loc}}">
-                                <p matLine>Location: ({{child.x}}, {{child.y}})</p>
-                                <p matLine>Genes: {{child.genes["red"]}} | {{child.genes["yellow"]}} | {{child.genes["white"]}} | {{child.genes["rose"]}}</p>
-                            </mat-list-item>
-                        </mat-list>
-                    </mat-expansion-panel>
+                    <mat-accordion>
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>Parents</mat-panel-title>
+                                <mat-panel-description>Click for more info.</mat-panel-description>
+                            </mat-expansion-panel-header>
+                            <mat-list class="family-wrapper" *ngIf="focused_flower.parents.length !== 0">
+                                <mat-list-item *ngFor="let parent of focused_flower.parents" class="focused-family" (click)="putFlowerInFocus(parent.x, parent.y)">
+                                    <img matListAvatar src="{{parent.image_loc}}">
+                                    <p matLine>Location: ({{parent.x}}, {{parent.y}})</p>
+                                    <p matLine>Genes: {{parent.genes["red"]}} | {{parent.genes["yellow"]}} | {{parent.genes["white"]}} | {{parent.genes["rose"]}}</p>
+                                </mat-list-item>
+                            </mat-list>
+                        </mat-expansion-panel>
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>Direct Children</mat-panel-title>
+                                <mat-panel-description>Click for more info.</mat-panel-description>
+                            </mat-expansion-panel-header>
+                            <mat-list class="family-wrapper" *ngIf="focused_flower.children.length !== 0">
+                                <mat-list-item *ngFor="let child of focused_flower.children" class="focused-family" (click)="putFlowerInFocus(child.x, child.y)">
+                                    <img matListAvatar src="{{child.image_loc}}">
+                                    <p matLine>Location: ({{child.x}}, {{child.y}})</p>
+                                    <p matLine>Genes: {{child.genes["red"]}} | {{child.genes["yellow"]}} | {{child.genes["white"]}} | {{child.genes["rose"]}}</p>
+                                </mat-list-item>
+                            </mat-list>
+                        </mat-expansion-panel>
+                    </mat-accordion>
                 </mat-card-content>
                 <mat-card-actions>
                     <button mat-stroked-button (click)="removeFocusedFlower()">Remove Flower</button>

@@ -88,8 +88,8 @@ export class BreederComponent implements OnInit {
 
     // loads validation and default values, makes validators required
     this.gridOptions = this.formBuilder.group({
-      rows: [this.gridRows, [Validators.required, Validators.min(3), Validators.max(20)]],
-      columns: [this.gridColumns, [Validators.required, Validators.min(3), Validators.max(20)]],
+      rows: [this.gridRows, [Validators.required, Validators.min(3), Validators.max(15)]],
+      columns: [this.gridColumns, [Validators.required, Validators.min(3), Validators.max(15)]],
       breedrate: [this.breed_success_rate, [Validators.required, Validators.min(0.01), Validators.max(1.0)]]
     });
     //flower.findNeighbors(this.grid, 0, 0);
@@ -122,12 +122,7 @@ export class BreederComponent implements OnInit {
   onFlowerDropped(event: any) {
     let deletionFlag = false;
     event.preventDefault();
-    let newFlower;
-    if (event.dataTransfer.getData("drag-type") == "bags") {
-      newFlower = document.getElementById(event.dataTransfer.getData("flower-id"));
-    }
-    else {
-      newFlower = document.getElementById(event.dataTransfer.getData("flower-id")).children[0];
+    if (event.dataTransfer.getData("drag-type") != "bags") {
       deletionFlag = true;
     }
     let id = event.target.id;
@@ -137,29 +132,40 @@ export class BreederComponent implements OnInit {
       id_ele = id_ele.parentElement;
       id = id_ele.id;
     }
+
+    // New location of flower
     let indexes = id.slice(5).split('-');
     let gridX = parseInt(indexes[0]);
     let gridY = parseInt(indexes[1]);
 
+    // Old location of flower
     let ind = event.dataTransfer.getData("flower-id").slice(5).split('-');
     let seedX = parseInt(ind[0]);
     let seedY = parseInt(ind[1]);
 
     this.grid[gridX][gridY] = flower.Flower.fromJson(event.dataTransfer.getData("flower-data"));
+    this.grid[gridX][gridY].x, this.grid[gridX][gridY].y = gridX, gridY;
     if (deletionFlag) {
       this.grid[seedX][seedY] = flower.blankFlower;
     }
   }
 
   putFlowerInFocus(x, y) {
-    this.focused_index = [x, y];
-    this.focused_flower = this.grid[x][y];
-    console.log(this.focused_flower);
+    if (this.focused_flower != this.grid[x][y]) {
+      this.focused_index = [x, y];
+      this.grid[x][y].x = x;
+      this.grid[x][y].y = y;
+      this.focused_flower = this.grid[x][y];
+    }
+    else {
+      this.focused_flower = flower.blankFlower;
+    }
   }
 
   removeFocusedFlower() {
     this.focused_flower = flower.blankFlower;
     this.grid[this.focused_index[0]][this.focused_index[1]] = flower.blankFlower;
+    this.focused_index = [];
   }
 
   highlightNeighbors() {
@@ -181,6 +187,7 @@ export class BreederComponent implements OnInit {
   pollinate() {
     let pollispaces = {};
     let flowerBred = false;
+    // Find spaces that are empty
     for (let x = 0; x < this.gridRows; x++) {
       for (let y = 0; y < this.gridColumns; y++) {
         if (this.grid[x][y].type !== flower.FlowerType.Blank) {
@@ -217,10 +224,12 @@ export class BreederComponent implements OnInit {
                 let res = par1.breed(par2, this.all_possible_flowers, this.curr_generation);
                 res.x = x;
                 res.y = y;
-                this.grid[x][y] = res
-                flowerBred = true;
+                res.parents.push(par1);
+                res.parents.push(par2);
                 par1.children.push(res);
                 par2.children.push(res);
+                this.grid[x][y] = res
+                flowerBred = true;
               }
               par1.has_bred = true;
               par2.has_bred = true;

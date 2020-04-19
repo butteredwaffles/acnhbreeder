@@ -27,8 +27,8 @@ mat-divider {
     background-color: green;
     background-image: url("../../assets/images/grass.bmp");
     background-size: 70px 70px;
-    width: 50vw;
-    height: 50vw;
+    width: 600px;
+    height: 600px;
     margin: 20px;
     display: inline-block;
     border: 10px dotted green;
@@ -60,12 +60,24 @@ mat-divider {
     height: 50px;
 }
 
-.children-wrapper {
+.family-wrapper {
     padding-top: 10px;
 }
 
-.focused-children:hover {
+.focused-family:hover {
     background-color: gray;
+}
+
+.highlighted-child {
+    background-color: rgba(114, 181, 243, 0.5);
+}
+
+.highlighted-parent {
+    background-color: rgba(82, 255, 183, 0.5);
+}
+
+.highlighted {
+    background-color: rgba(30, 30, 109, 0.8);
 }
 
 #detailed-view {
