@@ -1,4 +1,10 @@
-body{
+*{
+    font-family: "Arial Rounded MT Bold", -apple-system, BlinkMacSystemFont, "Segoe UI";
+}
+
+.center{
+    display: flex;
+    justify-content: center;
     background-color: #fbeba8;
 }
 
@@ -6,10 +12,23 @@ button {
     color: purple;
 }
 
+.roundy{
+    position: relative;
+    margin: 40px 0;
+    padding: 30px 30px 10px 30px;
+    background-color: rgb(136, 201, 161);
+    border-radius: 30px;
+    -webkit-box-shadow: 0 3px 0 0 rgba(0,0,0,0.15);
+    -moz-box-shadow: 0 3px 0 0 rgba(0,0,0,0.15);
+    box-shadow: 0 3px 0 0 rgba(0,0,0,0.15);
+}
+
 .breeding-area{
     background-color: green;
     background-image: url("../../assets/images/grass.bmp");
     background-size: 70px 70px;
+    width: 400px;
+    height: 400px;
 }
 
 .seed-bags {
@@ -18,14 +37,13 @@ button {
 }
 
 .breeding-cell {
-    width: 100px;
-    height: 100px;
-    border: 1px double black;
+    border: 1px double green;
+    background-color:rgb(136, 201, 161, 0.2);
     text-align: center;
 }
 
 .breeding-cell img {
-    height: 70px;
+    height: 90%;
 }
 
 .seed-bags img {
