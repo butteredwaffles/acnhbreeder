@@ -6,6 +6,11 @@ button {
     color: purple;
 }
 
+mat-divider {
+    height: 10px;
+    padding: 4px;
+}
+
 .roundy{
     position: relative;
     justify-content: center;
@@ -22,6 +27,11 @@ button {
     background-color: green;
     background-image: url("../../assets/images/grass.bmp");
     background-size: 70px 70px;
+    width: 50vw;
+    height: 50vw;
+    margin: 20px;
+    display: inline-block;
+    border: 10px dotted green;
 }
 
 .seed-bags {
@@ -30,17 +40,17 @@ button {
 }
 
 .breeding-cell {
-    border: 1px double green;
+    border: 3px double green;
     background-color:rgb(136, 201, 161, 0.2);
     text-align: center;
+
 }
 
-.breeding-cell> img {
-    object-fit: scale-down;
-    width: 100%;
-    height: 100%;
+.grid-imgs {
+    object-fit: contain;
 }
-.flower-imgs{
+
+.flower-imgs {
     object-fit: scale-down;
     width: 100%;
     height: 100%;
@@ -49,3 +59,34 @@ button {
 .seed-bags img {
     height: 50px;
 }
+
+.children-wrapper {
+    padding-top: 10px;
+}
+
+.focused-children:hover {
+    background-color: gray;
+}
+
+#detailed-view {
+    min-width: 20%;
+    max-width: 30%;
+    padding: 30px;
+    display: inline-block;
+    vertical-align: top;
+    white-space: pre;
+}
+
+#detailed-view img {
+    width: 20%;
+}
+
+#detailed-view button {
+    margin: 0 auto;
+    display: block;
+}
+
+#gene-view-table {
+    padding: 0;
+}
+

@@ -15,6 +15,10 @@ export class Flower {
     isSeedBag: boolean;
     image_loc: string;
     has_bred: boolean = false;
+    children: Flower[] = [];
+    x: number;
+    y: number;
+
 
     constructor(options: {attrs?: {}, type?: FlowerType, red_gene?: number, yellow_gene?: number, white_gene?: number, rose_gene?: number, color?: string, generation?: number, isSeedBag?: boolean}) {
         if (options.attrs !== undefined) {
@@ -90,6 +94,11 @@ export class Flower {
             }
         }
         return new Flower({type: this.type, red_gene: new_genes["red"], yellow_gene: new_genes["yellow"], white_gene: new_genes["white"], rose_gene: new_genes["rose"], color: new_color, generation: parent_gen + 1, isSeedBag: false});
+    }
+
+    static fromJson(json: string) {
+        let ob = JSON.parse(json);
+        return new Flower({type: FlowerType[ob.type[0].toUpperCase() + ob.type.slice(1)], red_gene: ob.genes.red, yellow_gene: ob.genes.yellow, white_gene: ob.genes.white, rose_gene: ob.genes.rose, color: ob.color, generation: ob.generation, isSeedBag: ob.isSeedBag});
     }
 }
 

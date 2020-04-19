@@ -39,7 +39,6 @@ export class BreederComponent implements OnInit {
             all_flowers.push(new flower.Flower({type: type, red_gene: parseInt(info[1]), yellow_gene: parseInt(info[2]), white_gene: parseInt(info[3]), rose_gene: parseInt(info[4]), color: info[5].toLowerCase(), generation: 1, isSeedBag: info[6] == 1 ? true : false}));
           }
           this.all_possible_flowers = all_flowers;
-          console.log(all_flowers);
           this.loadSeedBags();
         });
   }
@@ -102,10 +101,16 @@ export class BreederComponent implements OnInit {
   onFlowerDragged(event: any) {
     let id = event.target.parentElement.id;
     let isFromGrid = false;
-    if (id === "") {
-      id = event.target.parentElement.parentElement.id;
+    let id_ele = event.target;
+    while (id == "") {
+      id_ele = id_ele.parentElement;
+      id = id_ele.id;
       isFromGrid = true;
     }
+    let ind = id.slice(5).split('-');
+    let seedX = parseInt(ind[0]);
+    let seedY = parseInt(ind[1]);
+    event.dataTransfer.setData("flower-data", isFromGrid ? JSON.stringify(this.grid[seedX][seedY]) : JSON.stringify(this.seed_flowers[seedX]));
     event.dataTransfer.setData("flower-id", id);
     event.dataTransfer.setData("drag-type", isFromGrid ? "area" : "bags");
   }
@@ -133,20 +138,23 @@ export class BreederComponent implements OnInit {
       id = id_ele.id;
     }
     let indexes = id.slice(5).split('-');
-    let x = parseInt(indexes[0]);
-    let y = parseInt(indexes[1]);
-    this.grid[x][y] = new flower.Flower({attrs: newFlower.attributes});
+    let gridX = parseInt(indexes[0]);
+    let gridY = parseInt(indexes[1]);
+
+    let ind = event.dataTransfer.getData("flower-id").slice(5).split('-');
+    let seedX = parseInt(ind[0]);
+    let seedY = parseInt(ind[1]);
+
+    this.grid[gridX][gridY] = flower.Flower.fromJson(event.dataTransfer.getData("flower-data"));
     if (deletionFlag) {
-      let ind = event.dataTransfer.getData("flower-id").slice(5).split('-');
-      let i = parseInt(ind[0]);
-      let j = parseInt(ind[1]);
-      this.grid[i][j] = flower.blankFlower;
+      this.grid[seedX][seedY] = flower.blankFlower;
     }
   }
 
   putFlowerInFocus(x, y) {
     this.focused_index = [x, y];
     this.focused_flower = this.grid[x][y];
+    console.log(this.focused_flower);
   }
 
   removeFocusedFlower() {
@@ -206,8 +214,13 @@ export class BreederComponent implements OnInit {
             // this spot is free and ready to be breeded
             if (this.grid[x][y].type === flower.FlowerType.Blank) {
               if (Math.random() <= this.breed_success_rate) {
-                this.grid[x][y] = par1.breed(par2, this.all_possible_flowers, this.curr_generation);
+                let res = par1.breed(par2, this.all_possible_flowers, this.curr_generation);
+                res.x = x;
+                res.y = y;
+                this.grid[x][y] = res
                 flowerBred = true;
+                par1.children.push(res);
+                par2.children.push(res);
               }
               par1.has_bred = true;
               par2.has_bred = true;
