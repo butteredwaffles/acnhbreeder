@@ -27,5 +27,5 @@ $acnhbreeder-theme: mat-light-theme($acnhbreeder-primary, $acnhbreeder-accent, $
 @include angular-material-theme($acnhbreeder-theme);
 
 
-html, body { height: 100%; }
+body { height: 100%; width:100%; background-color: #e9f5eb; justify-content: center;}
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
