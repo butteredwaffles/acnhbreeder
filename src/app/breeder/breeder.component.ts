@@ -2,8 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import * as flower from '../flower';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { range } from 'rxjs';
-import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-breeder',
@@ -15,13 +13,12 @@ export class BreederComponent implements OnInit {
   breed_success_rate = .5;
   all_possible_flowers: flower.Flower[] = [];
   seed_flowers: flower.Flower[] = [];
-  seed_spliced: flower.Flower[][] = [];
   gridOptions;
   gridRows: number = 5;
   gridColumns: number = 5;
   grid;
   submitted;
-  curr_generation: number = 0;
+  curr_generation: number = 1;
   focused_index;
   focused_flower = flower.blankFlower;
 
@@ -39,7 +36,7 @@ export class BreederComponent implements OnInit {
           for (let data of text) {
             let info = data.split(',');
             let type = flower.FlowerType[info[0]];
-            all_flowers.push(new flower.Flower({type: type, red_gene: parseInt(info[1]), yellow_gene: parseInt(info[2]), white_gene: parseInt(info[3]), rose_gene: parseInt(info[4]), color: info[5].toLowerCase(), generation: 0, isSeedBag: info[6] == 1 ? true : false}));
+            all_flowers.push(new flower.Flower({type: type, red_gene: parseInt(info[1]), yellow_gene: parseInt(info[2]), white_gene: parseInt(info[3]), rose_gene: parseInt(info[4]), color: info[5].toLowerCase(), generation: 1, isSeedBag: info[6] == 1 ? true : false}));
           }
           this.all_possible_flowers = all_flowers;
           console.log(all_flowers);
@@ -55,14 +52,6 @@ export class BreederComponent implements OnInit {
       }
     }
     this.seed_flowers = seed_flws;
-
-    let index = 0;
-    let size = 6;
-    while (index < seed_flws.length) {
-      this.seed_spliced.push(seed_flws.slice(index, index + size));
-      index += size;
-    }
-    console.log(this.seed_spliced);
   }
 
   onSubmit(gridOptionsData): void {
@@ -77,25 +66,32 @@ export class BreederComponent implements OnInit {
 
     this.gridRows = gridOptionsData.rows;
     this.gridColumns = gridOptionsData.columns;
+    this.breed_success_rate = gridOptionsData.breedrate;
     
-    this.grid = flower.generateGrid(this.gridRows, this.gridColumns);
+    this.resetGrid();
   }
 
   //so it doesnt gets hecced on refresh
   onReset() {
     this.submitted = false;
     this.gridOptions.reset();
-}
+  }
+
+  resetGrid() {
+    this.grid = flower.generateGrid(this.gridRows, this.gridColumns);
+    this.curr_generation = 1;
+    this.focused_flower = flower.blankFlower;
+  }
 
   ngOnInit(): void {
     this.loadCSV();
-    this.grid = flower.generateGrid(this.gridRows, this.gridColumns);
-    this.curr_generation = 0;
+    this.resetGrid();
 
     // loads validation and default values, makes validators required
     this.gridOptions = this.formBuilder.group({
       rows: [5, [Validators.required, Validators.min(3), Validators.max(20)]],
-      columns: [5, [Validators.required, Validators.min(3), Validators.max(20)]]
+      columns: [5, [Validators.required, Validators.min(3), Validators.max(20)]],
+      breedrate: [.5, [Validators.required, Validators.min(0.01), Validators.max(1.0)]]
     });
     //flower.findNeighbors(this.grid, 0, 0);
   }
@@ -104,7 +100,14 @@ export class BreederComponent implements OnInit {
   get flowerValidation () { return this.gridOptions.controls; }
 
   onFlowerDragged(event: any) {
-    event.dataTransfer.setData("flower-id", event.target.parentElement.id);
+    let id = event.target.parentElement.id;
+    let isFromGrid = false;
+    if (id === "") {
+      id = event.target.parentElement.parentElement.id;
+      isFromGrid = true;
+    }
+    event.dataTransfer.setData("flower-id", id);
+    event.dataTransfer.setData("drag-type", isFromGrid ? "area" : "bags");
   }
 
   allowDrop(event: any) {
@@ -112,8 +115,16 @@ export class BreederComponent implements OnInit {
   }
 
   onFlowerDropped(event: any) {
+    let deletionFlag = false;
     event.preventDefault();
-    let newFlower = document.getElementById(event.dataTransfer.getData("flower-id"));
+    let newFlower;
+    if (event.dataTransfer.getData("drag-type") == "bags") {
+      newFlower = document.getElementById(event.dataTransfer.getData("flower-id"));
+    }
+    else {
+      newFlower = document.getElementById(event.dataTransfer.getData("flower-id")).children[0];
+      deletionFlag = true;
+    }
     let id = event.target.id;
     let id_ele = event.target;
     // ensures that no matter where the user drags the flower wil be replaced
@@ -122,9 +133,15 @@ export class BreederComponent implements OnInit {
       id = id_ele.id;
     }
     let indexes = id.slice(5).split('-');
-    let x: number = parseInt(indexes[0]);
-    let y: number = parseInt(indexes[1]);
+    let x = parseInt(indexes[0]);
+    let y = parseInt(indexes[1]);
     this.grid[x][y] = new flower.Flower({attrs: newFlower.attributes});
+    if (deletionFlag) {
+      let ind = event.dataTransfer.getData("flower-id").slice(5).split('-');
+      let i = parseInt(ind[0]);
+      let j = parseInt(ind[1]);
+      this.grid[i][j] = flower.blankFlower;
+    }
   }
 
   putFlowerInFocus(x, y) {
