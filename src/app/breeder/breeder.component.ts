@@ -89,9 +89,9 @@ export class BreederComponent implements OnInit {
 
     // loads validation and default values, makes validators required
     this.gridOptions = this.formBuilder.group({
-      rows: [5, [Validators.required, Validators.min(3), Validators.max(20)]],
-      columns: [5, [Validators.required, Validators.min(3), Validators.max(20)]],
-      breedrate: [.5, [Validators.required, Validators.min(0.01), Validators.max(1.0)]]
+      rows: [this.gridRows, [Validators.required, Validators.min(3), Validators.max(20)]],
+      columns: [this.gridColumns, [Validators.required, Validators.min(3), Validators.max(20)]],
+      breedrate: [this.breed_success_rate, [Validators.required, Validators.min(0.01), Validators.max(1.0)]]
     });
     //flower.findNeighbors(this.grid, 0, 0);
   }

@@ -22,6 +22,14 @@
                         </div>
                     </div>
                 </td>
+                <div>
+                    <label for="breedrate">Breeding Rate</label>
+                    <input id="breedrate" type="number" min="0.01" max="1" formControlName="breedrate" numeric-only required >
+                    <!-- flowerValidation -->
+                    <div *ngIf="submitted && flowerValidation.breedrate.errors">
+                        Breeding success rate must be between 0.01 and 1.0.
+                    </div>
+                </div>
                 <!-- just.... worry about validation later... no worry now-->
                 <button class="button" type="submit">Update Grid</button>  
             </table>
