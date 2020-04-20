@@ -8,6 +8,7 @@ interface IFlowerParams {
 }
 
 export class Flower {
+    opt_id: number = -1;
     type: FlowerType;
     genes: {};
     color: string;
@@ -15,13 +16,12 @@ export class Flower {
     isSeedBag: boolean;
     image_loc: string;
     has_bred: boolean = false;
-    children: Flower[] = [];
     parents: Flower[] = [];
     x: number;
     y: number;
 
 
-    constructor(options: {attrs?: {}, type?: FlowerType, red_gene?: number, yellow_gene?: number, white_gene?: number, rose_gene?: number, color?: string, generation?: number, isSeedBag?: boolean}) {
+    constructor(options: {attrs?: {}, parents?: Flower[], id?: number; type?: FlowerType, red_gene?: number, yellow_gene?: number, white_gene?: number, rose_gene?: number, color?: string, generation?: number, isSeedBag?: boolean}) {
         if (options.attrs !== undefined) {
             let attrs = options.attrs;
             this.type = FlowerType[attrs['data-type'].value[0].toUpperCase() + attrs['data-type'].value.slice(1)];
@@ -37,6 +37,8 @@ export class Flower {
             this.generation = attrs['data-generation'].value;
             this.isSeedBag = attrs['data-isSeedBag'].value;
             this.image_loc = "assets/images/" + this.color + "_" + this.type + ".png";
+            options.id === undefined ? null : this.opt_id = options.id;
+            options.parents === undefined ? null : this.parents = options.parents;
         }
         else {
             this.type = options.type;
@@ -50,6 +52,8 @@ export class Flower {
             this.generation = options.generation;
             this.isSeedBag = options.isSeedBag;
             this.image_loc = "assets/images/" + options.color + "_" + this.type + ".png";
+            options.id === undefined ? null : this.opt_id = options.id;
+            options.parents === undefined ? null : this.parents = options.parents;
         }
     }
 
@@ -98,7 +102,7 @@ export class Flower {
 
     static fromJson(json: string) {
         let ob = JSON.parse(json);
-        return new Flower({type: FlowerType[ob.type[0].toUpperCase() + ob.type.slice(1)], red_gene: ob.genes.red, yellow_gene: ob.genes.yellow, white_gene: ob.genes.white, rose_gene: ob.genes.rose, color: ob.color, generation: ob.generation, isSeedBag: ob.isSeedBag});
+        return new Flower({parents: ob.parents, id: ob.opt_id, type: FlowerType[ob.type[0].toUpperCase() + ob.type.slice(1)], red_gene: ob.genes.red, yellow_gene: ob.genes.yellow, white_gene: ob.genes.white, rose_gene: ob.genes.rose, color: ob.color, generation: ob.generation, isSeedBag: ob.isSeedBag});
     }
 }
 
@@ -121,6 +125,8 @@ export function generateGrid(rows: number, columns: number) {
         grid.push([])
         for (let j = 0; j < columns; j++) {
             grid[i].push(blankFlower);
+            grid[i][j].x = i;
+            grid[i][j].y = j;
         }
     }
     return grid;

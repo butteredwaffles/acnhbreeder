@@ -21,6 +21,23 @@ export class BreederComponent implements OnInit {
   curr_generation: number = 1;
   focused_index;
   focused_flower = flower.blankFlower;
+  focused_children: flower.Flower[] = [];
+  focused_parents: flower.Flower[] = [];
+  curr_par_id: number = 0;
+
+  getCircularReplacer = () => {
+    const seen = new WeakSet();
+    return (key, value) => {
+      if (typeof value === "object" && value !== null) {
+        if (seen.has(value)) {
+          return;
+        }
+        seen.add(value);
+      }
+      return value;
+    };
+  };
+  
 
   //empty constructor, moved to OnInit
   constructor(private http: HttpClient, private formBuilder: FormBuilder) {}
@@ -98,6 +115,17 @@ export class BreederComponent implements OnInit {
   //get Form for validation bullhecc in html, ppl usually use just "f" tho
   get flowerValidation () { return this.gridOptions.controls; }
 
+  // updateGrid() {
+  //   for (let x = 0; x < this.gridRows; x++) {
+  //     for (let y = 0; y < this.gridColumns; y++) {
+  //       let flo = this.grid[x][y];
+  //       for (let parent of flo.parents) {
+  //         if (this.grid[parent.x][parent.y]) !=
+  //       }
+  //     }
+  //   }
+  // }
+
   onFlowerDragged(event: any) {
     let id = event.target.parentElement.id;
     let isFromGrid = false;
@@ -142,20 +170,42 @@ export class BreederComponent implements OnInit {
     let ind = event.dataTransfer.getData("flower-id").slice(5).split('-');
     let seedX = parseInt(ind[0]);
     let seedY = parseInt(ind[1]);
-
     this.grid[gridX][gridY] = flower.Flower.fromJson(event.dataTransfer.getData("flower-data"));
-    this.grid[gridX][gridY].x, this.grid[gridX][gridY].y = gridX, gridY;
+    let newFlower: flower.Flower = this.grid[gridX][gridY];
+    newFlower.x, newFlower.y = gridX, gridY;
     if (deletionFlag) {
       this.grid[seedX][seedY] = flower.blankFlower;
     }
   }
 
   putFlowerInFocus(x, y) {
+    this.focused_children = [];
+    this.focused_parents = [];
     if (this.focused_flower != this.grid[x][y]) {
       this.focused_index = [x, y];
       this.grid[x][y].x = x;
       this.grid[x][y].y = y;
       this.focused_flower = this.grid[x][y];
+
+      for (let i = 0; i < this.gridRows; i++) {
+        for (let j = 0; j < this.gridColumns; j++) {
+          for (let par of this.grid[i][j].parents) {
+            if (par.opt_id === this.focused_flower.opt_id) {
+              this.focused_children.push(this.grid[i][j]);
+            }
+          }
+        }
+      }
+
+      let opt_ids = Array.from(this.focused_flower.parents, x => x.opt_id);
+      for (let i = 0; i < this.gridRows; i++) {
+        for (let j = 0; j < this.gridColumns; j++) {
+          if (opt_ids.includes(this.grid[i][j].opt_id)) {
+            this.focused_parents.push(this.grid[i][j]);
+          }
+        }
+      }
+      console.log(this.focused_flower, this.focused_parents);
     }
     else {
       this.focused_flower = flower.blankFlower;
@@ -163,9 +213,18 @@ export class BreederComponent implements OnInit {
   }
 
   removeFocusedFlower() {
+    for (let x = 0; x < this.gridRows; x++) {
+      for (let y = 0; y < this.gridColumns; y++) {
+        if (this.grid[x][y].parents.includes(this.focused_flower)) {
+          this.grid[x][y].splice(this.grid[x][y].parents.indexOf(this.focused_flower), 1);
+        }
+      }
+    }
     this.focused_flower = flower.blankFlower;
     this.grid[this.focused_index[0]][this.focused_index[1]] = flower.blankFlower;
     this.focused_index = [];
+    this.focused_children = [];
+    this.focused_parents = [];
   }
 
   highlightNeighbors() {
@@ -224,10 +283,16 @@ export class BreederComponent implements OnInit {
                 let res = par1.breed(par2, this.all_possible_flowers, this.curr_generation);
                 res.x = x;
                 res.y = y;
+                if (par1.opt_id === -1) {
+                  par1.opt_id = this.curr_par_id+1;
+                  this.curr_par_id += 1;
+                }
+                if (par2.opt_id === -1) {
+                  par2.opt_id = this.curr_par_id+1;
+                  this.curr_par_id += 1;
+                }
                 res.parents.push(par1);
                 res.parents.push(par2);
-                par1.children.push(res);
-                par2.children.push(res);
                 this.grid[x][y] = res
                 flowerBred = true;
               }
