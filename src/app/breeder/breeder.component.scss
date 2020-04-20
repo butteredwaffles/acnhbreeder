@@ -48,11 +48,7 @@ mat-divider {
 
 }
 
-.grid-imgs {
-    object-fit: contain;
-}
-
-.flower-imgs {
+.flower-imgs, .grid-imgs {
     object-fit: scale-down;
     width: 100%;
     height: 100%;

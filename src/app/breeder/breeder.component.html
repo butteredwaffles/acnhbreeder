@@ -76,12 +76,12 @@
                         </tr>
                     </table>
                     <mat-accordion>
-                        <mat-expansion-panel>
+                        <mat-expansion-panel *ngIf="focused_parents.length !== 0">
                             <mat-expansion-panel-header>
                                 <mat-panel-title>Parents</mat-panel-title>
                                 <mat-panel-description>Click for more info.</mat-panel-description>
                             </mat-expansion-panel-header>
-                            <mat-list class="family-wrapper" *ngIf="focused_parents.length !== 0">
+                            <mat-list class="family-wrapper">
                                 <mat-list-item *ngFor="let parent of focused_parents" class="focused-family" (click)="putFlowerInFocus(parent.x, parent.y)">
                                     <img matListAvatar src="{{parent.image_loc}}">
                                     <p matLine>Location: ({{parent.x}}, {{parent.y}})</p>
@@ -89,12 +89,12 @@
                                 </mat-list-item>
                             </mat-list>
                         </mat-expansion-panel>
-                        <mat-expansion-panel>
+                        <mat-expansion-panel *ngIf="focused_children.length !== 0">
                             <mat-expansion-panel-header>
                                 <mat-panel-title>Direct Children</mat-panel-title>
                                 <mat-panel-description>Click for more info.</mat-panel-description>
                             </mat-expansion-panel-header>
-                            <mat-list class="family-wrapper" *ngIf="focused_children.length !== 0">
+                            <mat-list class="family-wrapper">
                                 <mat-list-item *ngFor="let child of focused_children" class="focused-family" (click)="putFlowerInFocus(child.x, child.y)">
                                     <img matListAvatar src="{{child.image_loc}}">
                                     <p matLine>Location: ({{child.x}}, {{child.y}})</p>
@@ -102,7 +102,7 @@
                                 </mat-list-item>
                             </mat-list>
                         </mat-expansion-panel>
-                        <mat-expansion-panel>
+                        <mat-expansion-panel *ngIf="focused_possibilities.length !== 0">
                             <mat-expansion-panel-header>
                                 <mat-panel-title>Child Possibilities</mat-panel-title>
                                 <mat-panel-description>Click for more info.</mat-panel-description>
