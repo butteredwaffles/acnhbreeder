@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { HostListener, Component, OnInit } from '@angular/core';
 import * as flower from '../flower';
 import * as Log from '../logger';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
@@ -29,6 +29,29 @@ export class BreederComponent implements OnInit {
 
   //empty constructor, moved to OnInit
   constructor(private http: HttpClient, private formBuilder: FormBuilder) {}
+
+  @HostListener('window:keyup', ['$event'])
+  keyEvent(event: KeyboardEvent) {
+    try {
+      let focx = this.focused_flower.x;
+      let focy = this.focused_flower.y;
+      switch (event.keyCode) {
+        case 65: // A
+          this.grid[focx][focy-1].type !== flower.FlowerType.Blank ? this.putFlowerInFocus(focx, focy-1) : null;
+          break;
+        case 87: // W
+          this.grid[focx-1][focy].type !== flower.FlowerType.Blank ?this.putFlowerInFocus(focx-1, focy) : null;
+          break;
+        case 68: // D
+          this.grid[focx][focy+1].type !== flower.FlowerType.Blank ? this.putFlowerInFocus(focx, focy+1) : null;
+          break;
+        case 83: // S
+          this.grid[focx+1][focy].type !== flower.FlowerType.Blank ? this.putFlowerInFocus(focx+1, focy) : null;
+          break;
+      }
+    }
+    catch (e) {} // Either there is no flower in focus or we are at grid boundaries. Not important to handle.
+  }
   
 
   loadCSV(): void {
