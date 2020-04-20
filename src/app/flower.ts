@@ -102,7 +102,7 @@ export class Flower {
 
     generatePossibleChildrenImages(other: Flower, all_flowers: Flower[]) {
         let filtered = all_flowers.filter(fl => fl.type === this.type);
-        let results = Array.from({length: 10}, x => this.breed(other, filtered, -1).image_loc).sort();
+        let results = Array.from({length: 30}, x => this.breed(other, filtered, -1).image_loc).sort();
         return results.filter((val, index) => results.indexOf(val) === index);
     }
 

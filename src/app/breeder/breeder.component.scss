@@ -54,8 +54,19 @@ mat-divider {
     height: 100%;
 }
 
+
 .seed-bags img {
     height: 50px;
+}
+
+.poss-imgs {
+    position: relative;
+    left: 3px;
+}
+
+.poss-wrapper {
+    justify-content: left;
+    //white-space: pre;
 }
 
 .family-wrapper {
@@ -77,6 +88,7 @@ mat-divider {
 .highlighted {
     background-color: rgba(30, 30, 109, 0.8);
 }
+
 
 #detailed-view {
     min-width: 20%;

@@ -39,16 +39,15 @@
     <div class="roundy" layout="row center-center">
         <mat-grid-list cols="{{gridColumns}}" rowHeight="fit" class="breeding-area">
                 <ng-container *ngFor="let row of grid; let pIndex=index;" >
-
-                <mat-grid-tile *ngFor="let flower of row; let dIndex=index;" id="area-{{pIndex}}-{{dIndex}}" 
-                [ngClass]="{'highlighted': focused_flower.x === pIndex && focused_flower.y === dIndex && flower.type !== 'blank', 'highlighted-child': focused_children.indexOf(flower) >= 0, 'highlighted-parent': focused_parents.indexOf(flower) >= 0}" class="breeding-cell" 
-                (dragover)="allowDrop($event)" (drop)="onFlowerDropped($event)">
-                        <div *ngIf="flower.type !== 'blank'"
-                        attr.data-type="{{ flower.type }}" attr.data-genes="{{flower.genes.red}}{{flower.genes.yellow}}{{flower.genes.white}}{{flower.genes.rose}}"
-                        attr.data-color="{{flower.color}}" attr.data-generation="{{flower.generation}}" attr.data-isSeedBag="{{flower.isSeedBag}}">
-                        <img draggable=true (dragstart)="onFlowerDragged($event)" (click)="putFlowerInFocus(pIndex, dIndex)" class="grid-imgs" src="{{ flower.image_loc }}" layout-fill>
-                        </div>
-                </mat-grid-tile>
+                    <mat-grid-tile *ngFor="let flower of row; let dIndex=index;" id="area-{{pIndex}}-{{dIndex}}" 
+                    [ngClass]="{'highlighted': focused_flower.x === pIndex && focused_flower.y === dIndex && flower.type !== 'blank', 'highlighted-child': focused_children.indexOf(flower) >= 0, 'highlighted-parent': focused_parents.indexOf(flower) >= 0}" class="breeding-cell" 
+                    (dragover)="allowDrop($event)" (drop)="onFlowerDropped($event)">
+                            <div *ngIf="flower.type !== 'blank'"
+                            attr.data-type="{{ flower.type }}" attr.data-genes="{{flower.genes.red}}{{flower.genes.yellow}}{{flower.genes.white}}{{flower.genes.rose}}"
+                            attr.data-color="{{flower.color}}" attr.data-generation="{{flower.generation}}" attr.data-isSeedBag="{{flower.isSeedBag}}">
+                            <img draggable=true (dragstart)="onFlowerDragged($event)" (click)="putFlowerInFocus(pIndex, dIndex)" class="grid-imgs" src="{{ flower.image_loc }}" layout-fill>
+                            </div>
+                    </mat-grid-tile>
                 </ng-container>
         </mat-grid-list>
 
@@ -79,7 +78,6 @@
                         <mat-expansion-panel *ngIf="focused_parents.length !== 0">
                             <mat-expansion-panel-header>
                                 <mat-panel-title>Parents</mat-panel-title>
-                                <mat-panel-description>Click for more info.</mat-panel-description>
                             </mat-expansion-panel-header>
                             <mat-list class="family-wrapper">
                                 <mat-list-item *ngFor="let parent of focused_parents" class="focused-family" (click)="putFlowerInFocus(parent.x, parent.y)">
@@ -92,7 +90,6 @@
                         <mat-expansion-panel *ngIf="focused_children.length !== 0">
                             <mat-expansion-panel-header>
                                 <mat-panel-title>Direct Children</mat-panel-title>
-                                <mat-panel-description>Click for more info.</mat-panel-description>
                             </mat-expansion-panel-header>
                             <mat-list class="family-wrapper">
                                 <mat-list-item *ngFor="let child of focused_children" class="focused-family" (click)="putFlowerInFocus(child.x, child.y)">
@@ -105,12 +102,11 @@
                         <mat-expansion-panel *ngIf="focused_possibilities.length !== 0">
                             <mat-expansion-panel-header>
                                 <mat-panel-title>Child Possibilities</mat-panel-title>
-                                <mat-panel-description>Click for more info.</mat-panel-description>
                             </mat-expansion-panel-header>
                             <mat-list class="family-wrapper">
-                                <mat-list-item *ngFor="let item of focused_possibilities" class="focused-family">
+                                <mat-list-item *ngFor="let item of focused_possibilities" class="focused-family poss-wrapper">
                                     <p>{{ item.location }}:</p>
-                                    <img class="flower-imgs" *ngFor="let poss of item.colors" src="{{poss}}">
+                                    <img class="flower-imgs poss-imgs" *ngFor="let poss of item.colors" src="{{poss}}">
                                 </mat-list-item>
                             </mat-list>
                         </mat-expansion-panel>
