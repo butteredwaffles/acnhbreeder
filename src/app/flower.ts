@@ -14,6 +14,7 @@ export class Flower {
     color: string;
     generation: number;
     isSeedBag: boolean;
+    isHybridIsle: boolean;
     image_loc: string;
     has_bred: boolean = false;
     parents: Flower[] = [];
@@ -21,7 +22,7 @@ export class Flower {
     y: number = -1;
 
 
-    constructor(options: {attrs?: {}, parents?: Flower[], id?: number; type?: FlowerType, red_gene?: number, yellow_gene?: number, white_gene?: number, rose_gene?: number, color?: string, generation?: number, isSeedBag?: boolean}) {
+    constructor(options: {attrs?: {}, parents?: Flower[], id?: number; type?: FlowerType, red_gene?: number, yellow_gene?: number, white_gene?: number, rose_gene?: number, color?: string, generation?: number, isSeedBag?: boolean, isHybrid?: boolean}) {
         if (options.attrs !== undefined) {
             let attrs = options.attrs;
             this.type = FlowerType[attrs['data-type'].value[0].toUpperCase() + attrs['data-type'].value.slice(1)];
@@ -36,6 +37,7 @@ export class Flower {
             this.color = attrs['data-color'].value;
             this.generation = attrs['data-generation'].value;
             this.isSeedBag = attrs['data-isSeedBag'].value;
+            this.isHybridIsle = attrs['data-isHybridFlower'].value;
             this.image_loc = "assets/images/" + this.color + "_" + this.type + ".png";
             options.id === undefined ? null : this.opt_id = options.id;
             options.parents === undefined ? null : this.parents = options.parents;
@@ -50,7 +52,8 @@ export class Flower {
             };
             this.color = options.color;
             this.generation = options.generation;
-            this.isSeedBag = options.isSeedBag;
+            options.isSeedBag === undefined ? null : this.isSeedBag = options.isSeedBag;
+            options.isHybrid === undefined ? null : this.isHybridIsle = options.isHybrid;
             this.image_loc = "assets/images/" + options.color + "_" + this.type + ".png";
             options.id === undefined ? null : this.opt_id = options.id;
             options.parents === undefined ? null : this.parents = options.parents;

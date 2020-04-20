@@ -14,6 +14,7 @@ export class BreederComponent implements OnInit {
   breed_success_rate = .5;
   all_possible_flowers: flower.Flower[] = [];
   seed_flowers: flower.Flower[] = [];
+  isle_flowers: flower.Flower[] = [];
   gridOptions;
   gridRows: number = 5;
   gridColumns: number = 5;
@@ -64,7 +65,17 @@ export class BreederComponent implements OnInit {
           for (let data of text) {
             let info = data.split(',');
             let type = flower.FlowerType[info[0]];
-            all_flowers.push(new flower.Flower({type: type, red_gene: parseInt(info[1]), yellow_gene: parseInt(info[2]), white_gene: parseInt(info[3]), rose_gene: parseInt(info[4]), color: info[5].toLowerCase(), generation: 1, isSeedBag: info[6] == 1 ? true : false}));
+            let isSeedBag = false;
+            let isHybridIsle = false;
+            switch (parseInt(info[6])) {
+              case 1:
+                isSeedBag = true;
+                break;
+              case 2:
+                isHybridIsle = true;
+                break;
+            }
+            all_flowers.push(new flower.Flower({type: type, red_gene: parseInt(info[1]), yellow_gene: parseInt(info[2]), white_gene: parseInt(info[3]), rose_gene: parseInt(info[4]), color: info[5].toLowerCase(), generation: 1, isSeedBag: isSeedBag, isHybrid: isHybridIsle}));
           }
           this.all_possible_flowers = all_flowers;
           this.loadSeedBags();
@@ -73,13 +84,14 @@ export class BreederComponent implements OnInit {
   }
 
   loadSeedBags(): void {
-    let seed_flws = [];
     for (let flower of this.all_possible_flowers) {
       if (flower.isSeedBag) {
-        seed_flws.push(flower);
+        this.seed_flowers.push(flower);
+      }
+      else if (flower.isHybridIsle) {
+        this.isle_flowers.push(flower);
       }
     }
-    this.seed_flowers = seed_flws;
   }
 
   onSubmit(gridOptionsData): void {
@@ -141,19 +153,32 @@ export class BreederComponent implements OnInit {
 
   onFlowerDragged(event: any) {
     let id = event.target.parentElement.id;
-    let isFromGrid = false;
     let id_ele = event.target;
     while (id == "") {
       id_ele = id_ele.parentElement;
       id = id_ele.id;
-      isFromGrid = true;
     }
     let ind = id.slice(5).split('-');
     let seedX = parseInt(ind[0]);
     let seedY = parseInt(ind[1]);
-    event.dataTransfer.setData("flower-data", isFromGrid ? JSON.stringify(this.grid[seedX][seedY]) : JSON.stringify(this.seed_flowers[seedX]));
+
+    let data;
+    let drag_type;
+    if (id.includes("area")) {
+      data = JSON.stringify(this.grid[seedX][seedY]);
+      drag_type = "area";
+    }
+    else if (id.includes("bags")) {
+      data = JSON.stringify(this.seed_flowers[seedX]);
+      drag_type = "bags";
+    }
+    else {
+      data = JSON.stringify(this.isle_flowers[seedX]);
+      drag_type = "isle";
+    }
+    event.dataTransfer.setData("flower-data", data);
     event.dataTransfer.setData("flower-id", id);
-    event.dataTransfer.setData("drag-type", isFromGrid ? "area" : "bags");
+    event.dataTransfer.setData("drag-type", drag_type);
   }
 
   allowDrop(event: any) {
@@ -163,7 +188,7 @@ export class BreederComponent implements OnInit {
   onFlowerDropped(event: any) {
     let deletionFlag = false;
     event.preventDefault();
-    if (event.dataTransfer.getData("drag-type") != "bags") {
+    if (event.dataTransfer.getData("drag-type") === "area") {
       deletionFlag = true;
     }
     let id = event.target.id;

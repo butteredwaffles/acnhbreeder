@@ -130,6 +130,15 @@
                     <img class="flower-imgs" src="{{ flower.image_loc }}">
                 </div>
             </div>
+            <mat-divider></mat-divider>
+            <h3 class="button-text">Hybrid Island</h3>
+            <div class="seed-bags"> 
+                <div class="grid-item" *ngFor="let flower of isle_flowers; let eleIndex=index;" id="isle-{{eleIndex}}" draggable=true (dragstart)="onFlowerDragged($event)"
+                attr.data-type="{{ flower.type }}" attr.data-genes="{{flower.genes.red}}{{flower.genes.yellow}}{{flower.genes.white}}{{flower.genes.rose}}"
+                attr.data-color="{{flower.color}}" attr.data-generation="{{flower.generation}}" attr.data-isSeedBag="{{flower.isSeedBag}}">
+                    <img class="flower-imgs" src="{{ flower.image_loc }}">
+                </div>
+            </div>
         </div>
     </div>
 
