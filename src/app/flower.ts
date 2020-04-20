@@ -91,13 +91,19 @@ export class Flower {
             }
             new_genes[key] = par1+par2;
         }
-        for (let fl of all_flowers.filter(fl => fl.type === this.type)) {
+        for (let fl of all_flowers) {
             if (this.equals(new_genes, fl.genes)) {
                 new_color = fl.color;
                 break;
             }
         }
         return new Flower({type: this.type, red_gene: new_genes["red"], yellow_gene: new_genes["yellow"], white_gene: new_genes["white"], rose_gene: new_genes["rose"], color: new_color, generation: parent_gen + 1, isSeedBag: false});
+    }
+
+    generatePossibleChildrenImages(other: Flower, all_flowers: Flower[]) {
+        let filtered = all_flowers.filter(fl => fl.type === this.type);
+        let results = Array.from({length: 10}, x => this.breed(other, filtered, -1).image_loc)
+        return results.filter((val, index) => results.indexOf(val) === index);
     }
 
     static fromJson(json: string) {

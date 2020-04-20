@@ -24,6 +24,7 @@ export class BreederComponent implements OnInit {
   focused_flower = flower.blankFlower;
   focused_children: flower.Flower[] = [];
   focused_parents: flower.Flower[] = [];
+  focused_possibilities: Object[] = [];
   curr_par_id: number = 0;
 
   //empty constructor, moved to OnInit
@@ -171,6 +172,7 @@ export class BreederComponent implements OnInit {
   putFlowerInFocus(x, y) {
     this.focused_children = [];
     this.focused_parents = [];
+    this.focused_possibilities = [];
     if (this.focused_flower != this.grid[x][y]) {
       this.focused_index = [x, y];
       this.grid[x][y].x = x;
@@ -195,6 +197,49 @@ export class BreederComponent implements OnInit {
           }
         }
       }
+
+      let neighbors = flower.findNeighbors(this.grid, x, y);
+      for (let n of neighbors) {
+        let i = n[0];
+        let j = n[1];
+        if (i < this.gridRows && j < this.gridColumns) {
+          if (this.grid[i][j].type === this.focused_flower.type) {
+            let possible_colors = this.focused_flower.generatePossibleChildrenImages(this.grid[i][j], this.all_possible_flowers);
+            let location: string;
+            if (i === x+1 && j === y-1) {
+              location = "Bottom-Left";
+            }
+            else if (i === x+1 && j === y) {
+              location = "Bottom-Center";
+            }
+            else if (i === x+1 && j === y+1) {
+              location = "Bottom-Right";
+            }
+            else if (i === x-1 && j === y-1) {
+              location = "Top-Left";
+            }
+            else if (i === x-1 && j === y) {
+              location = "Top-Center";
+            }
+            else if (i === x-1 && j === y+1) {
+              location = "Top-Right";
+            }
+            else if (i === x && j === y-1) {
+              location = "Center-Left";
+            }
+            else {
+              location = "Center-Right";
+            }
+            this.focused_possibilities.push({location: location, colors: possible_colors});
+            
+          }
+        }
+      }
+      for (let item of this.focused_possibilities) {
+        console.log(item["location"]);
+      }
+      console.log(this.focused_possibilities);
+
       Log.info(`${this.focused_flower.color.toUpperCase()} ${this.focused_flower.type.toUpperCase()} in position (${x}, ${y}) is in focus.`, "green");
     }
     else {
@@ -217,6 +262,7 @@ export class BreederComponent implements OnInit {
     this.focused_index = [];
     this.focused_children = [];
     this.focused_parents = [];
+    this.focused_possibilities = [];
   }
 
   highlightNeighbors() {
@@ -272,7 +318,7 @@ export class BreederComponent implements OnInit {
             // this spot is free and ready to be breeded
             if (this.grid[x][y].type === flower.FlowerType.Blank) {
               if (Math.random() <= this.breed_success_rate) {
-                let res = par1.breed(par2, this.all_possible_flowers, this.curr_generation);
+                let res = par1.breed(par2, this.all_possible_flowers.filter(fl => fl.type === par1.type), this.curr_generation);
                 res.x = x;
                 res.y = y;
                 if (par1.opt_id === -1) {

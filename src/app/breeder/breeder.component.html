@@ -102,6 +102,18 @@
                                 </mat-list-item>
                             </mat-list>
                         </mat-expansion-panel>
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>Child Possibilities</mat-panel-title>
+                                <mat-panel-description>Click for more info.</mat-panel-description>
+                            </mat-expansion-panel-header>
+                            <mat-list class="family-wrapper">
+                                <mat-list-item *ngFor="let item of focused_possibilities" class="focused-family">
+                                    <p>{{ item.location }}:</p>
+                                    <img class="flower-imgs" *ngFor="let poss of item.colors" src="{{poss}}">
+                                </mat-list-item>
+                            </mat-list>
+                        </mat-expansion-panel>
                     </mat-accordion>
                 </mat-card-content>
                 <mat-card-actions>
