@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import * as flower from '../flower';
+import * as Log from '../logger';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 
@@ -25,20 +26,6 @@ export class BreederComponent implements OnInit {
   focused_parents: flower.Flower[] = [];
   curr_par_id: number = 0;
 
-  getCircularReplacer = () => {
-    const seen = new WeakSet();
-    return (key, value) => {
-      if (typeof value === "object" && value !== null) {
-        if (seen.has(value)) {
-          return;
-        }
-        seen.add(value);
-      }
-      return value;
-    };
-  };
-  
-
   //empty constructor, moved to OnInit
   constructor(private http: HttpClient, private formBuilder: FormBuilder) {}
   
@@ -57,6 +44,7 @@ export class BreederComponent implements OnInit {
           }
           this.all_possible_flowers = all_flowers;
           this.loadSeedBags();
+          Log.info("All base flowers loaded.", "green");
         });
   }
 
@@ -97,6 +85,7 @@ export class BreederComponent implements OnInit {
     this.grid = flower.generateGrid(this.gridRows, this.gridColumns);
     this.curr_generation = 1;
     this.focused_flower = flower.blankFlower;
+    Log.info(`Grid has been reset to be ${this.gridColumns} x ${this.gridRows}.`, "red");
   }
 
   ngOnInit(): void {
@@ -176,6 +165,7 @@ export class BreederComponent implements OnInit {
     if (deletionFlag) {
       this.grid[seedX][seedY] = flower.blankFlower;
     }
+    Log.info(`Flower ${deletionFlag ? "in position Grid-(" + seedX + "," + seedY + ")": "from Seed Bag"} has been moved to Grid-(${gridX}, ${gridY}).`, "orange");
   }
 
   putFlowerInFocus(x, y) {
@@ -205,10 +195,11 @@ export class BreederComponent implements OnInit {
           }
         }
       }
-      console.log(this.focused_flower, this.focused_parents);
+      Log.info(`${this.focused_flower.color.toUpperCase()} ${this.focused_flower.type.toUpperCase()} in position (${x}, ${y}) is in focus.`, "green");
     }
     else {
       this.focused_flower = flower.blankFlower;
+      Log.info('Focus has been cleared.');
     }
   }
 
@@ -216,10 +207,11 @@ export class BreederComponent implements OnInit {
     for (let x = 0; x < this.gridRows; x++) {
       for (let y = 0; y < this.gridColumns; y++) {
         if (this.grid[x][y].parents.includes(this.focused_flower)) {
-          this.grid[x][y].splice(this.grid[x][y].parents.indexOf(this.focused_flower), 1);
+          this.grid[x][y].parents.splice(this.grid[x][y].parents.indexOf(this.focused_flower), 1);
         }
       }
     }
+    Log.info(`${this.focused_flower.color.toUpperCase()} ${this.focused_flower.type.toUpperCase()} in position (${this.focused_flower.x}, ${this.focused_flower.y}) has been deleted.`, "red");
     this.focused_flower = flower.blankFlower;
     this.grid[this.focused_index[0]][this.focused_index[1]] = flower.blankFlower;
     this.focused_index = [];
@@ -295,6 +287,7 @@ export class BreederComponent implements OnInit {
                 res.parents.push(par2);
                 this.grid[x][y] = res
                 flowerBred = true;
+                Log.info(`${par1.color.toUpperCase()} ${par1.type.toUpperCase()} (${par1.x}, ${par1.y}) and ${par2.color.toUpperCase()} ${par2.type.toUpperCase()} (${par2.x}, ${par2.y}) successfully bred ${res.color.toUpperCase()} ${res.type.toUpperCase()} (${res.x}, ${res.y}) with genes RED-${res.genes["red"]} YELLOW-${res.genes["yellow"]} WHITE-${res.genes["white"]} ROSE-${res.genes["rose"]}.`, "blue");
               }
               par1.has_bred = true;
               par2.has_bred = true;

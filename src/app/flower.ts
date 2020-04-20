@@ -17,8 +17,8 @@ export class Flower {
     image_loc: string;
     has_bred: boolean = false;
     parents: Flower[] = [];
-    x: number;
-    y: number;
+    x: number = -1;
+    y: number = -1;
 
 
     constructor(options: {attrs?: {}, parents?: Flower[], id?: number; type?: FlowerType, red_gene?: number, yellow_gene?: number, white_gene?: number, rose_gene?: number, color?: string, generation?: number, isSeedBag?: boolean}) {
