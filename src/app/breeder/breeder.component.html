@@ -1,29 +1,25 @@
-<div layout="row" layout-align="center center">
-    <div class="roundy">
+<div class="container">
+    <div class="roundy form-options">
         <form [formGroup]="gridOptions" (ngSubmit)="onSubmit(gridOptions.value)">
-                <table>
-                <td>
-                    <div>
-                        <label for="rows">Rows</label>
+                    <div class="options-div">
+                        <label for="rows" class="button-text">Rows: </label>
                         <input id="rows" type="number" min="3" max="15" formControlName="rows" numeric-only required>
                         <!-- flowerValidation -->
                         <div *ngIf="submitted && flowerValidation.rows.errors">
                             There must be a minimum of three rows and a maximum of fifteen.
                         </div>
                     </div>
-                </td>
-                <td>
-                    <div>
-                        <label for="columns">Columns</label>
+
+                    <div class="options-div">
+                        <label for="columns" class="button-text">Columns: </label>
                         <input id="columns" type="number" min="3" max="15" formControlName="columns" numeric-only required >
                         <!-- flowerValidation -->
                         <div *ngIf="submitted && flowerValidation.columns.errors">
                             There must be a minimum of three columns and a maximum of fifteen.
                         </div>
                     </div>
-                </td>
-                <div>
-                    <label for="breedrate">Breeding Rate</label>
+                <div class="options-div">
+                    <label for="breedrate" class="button-text">Breeding Rate: </label>
                     <input id="breedrate" type="number" min="0.01" max="1" formControlName="breedrate" numeric-only required >
                     <!-- flowerValidation -->
                     <div *ngIf="submitted && flowerValidation.breedrate.errors">
@@ -31,27 +27,28 @@
                     </div>
                 </div>
                 <!-- just.... worry about validation later... no worry now-->
-                <button class="button" type="submit">Update Grid</button>  
-            </table>
+                <button type="submit"><p class="button-text">Update Grid</p></button>  
         </form>
     </div>
 
-    <div class="roundy" layout="row center-center">
-        <mat-grid-list cols="{{gridColumns}}" rowHeight="fit" class="breeding-area">
-                <ng-container *ngFor="let row of grid; let pIndex=index;" >
-                    <mat-grid-tile *ngFor="let flower of row; let dIndex=index;" id="area-{{pIndex}}-{{dIndex}}" 
-                    [ngClass]="{'highlighted': focused_flower.x === pIndex && focused_flower.y === dIndex && flower.type !== 'blank', 'highlighted-child': focused_children.indexOf(flower) >= 0, 'highlighted-parent': focused_parents.indexOf(flower) >= 0}" class="breeding-cell" 
-                    (dragover)="allowDrop($event)" (drop)="onFlowerDropped($event)">
-                            <div *ngIf="flower.type !== 'blank'"
-                            attr.data-type="{{ flower.type }}" attr.data-genes="{{flower.genes.red}}{{flower.genes.yellow}}{{flower.genes.white}}{{flower.genes.rose}}"
-                            attr.data-color="{{flower.color}}" attr.data-generation="{{flower.generation}}" attr.data-isSeedBag="{{flower.isSeedBag}}">
-                            <img draggable=true (dragstart)="onFlowerDragged($event)" (click)="putFlowerInFocus(pIndex, dIndex)" class="grid-imgs" src="{{ flower.image_loc }}" layout-fill>
-                            </div>
-                    </mat-grid-tile>
-                </ng-container>
-        </mat-grid-list>
 
-        <div id="detailed-view" rowHeight="fit" *ngIf="focused_flower.type != 'blank' && focused_flower.genes !== {}">
+    
+        <div class="breeding-mats">
+            <div class="roundy">
+        <mat-grid-list cols="{{gridColumns}}" rowHeight="fit" class="breeding-area centered">
+            <ng-container *ngFor="let row of grid; let pIndex=index;" >
+                <mat-grid-tile *ngFor="let flower of row; let dIndex=index;" id="area-{{pIndex}}-{{dIndex}}" 
+                [ngClass]="{'highlighted': focused_flower.x === pIndex && focused_flower.y === dIndex && flower.type !== 'blank', 'highlighted-child': focused_children.indexOf(flower) >= 0, 'highlighted-parent': focused_parents.indexOf(flower) >= 0}" class="breeding-cell" 
+                (dragover)="allowDrop($event)" (drop)="onFlowerDropped($event)">
+                    <div *ngIf="flower.type !== 'blank'"
+                    attr.data-type="{{ flower.type }}" attr.data-genes="{{flower.genes.red}}{{flower.genes.yellow}}{{flower.genes.white}}{{flower.genes.rose}}"
+                    attr.data-color="{{flower.color}}" attr.data-generation="{{flower.generation}}" attr.data-isSeedBag="{{flower.isSeedBag}}">
+                        <img draggable=true (dragstart)="onFlowerDragged($event)" (click)="putFlowerInFocus(pIndex, dIndex)" class="grid-imgs" src="{{ flower.image_loc }}" layout-fill>
+                    </div>
+                </mat-grid-tile>
+            </ng-container>
+        </mat-grid-list>
+        <div id="detailed-view" rowHeight="fit" *ngIf="focused_flower.type != 'blank' && focused_flower.genes !== {}; else detailedElse">
             <mat-card>
                 <mat-card-header>
                     <img mat-card-sm-image class="flower-imgs"  src="{{ focused_flower.image_loc }}">
@@ -59,7 +56,7 @@
                     <mat-card-subtitle>Origin: {{focused_flower.isSeedBag ? "Seed" : "Bred"}}</mat-card-subtitle>
                 </mat-card-header>
                 <mat-card-content>   
-                    <p> Generation: {{focused_flower.generation}}</p>            
+                    <p> Generation: {{focused_flower.generation}}</p> 
                     <table id="gene-view-table">                    
                         <tr>
                             <td>Red: </td>
@@ -113,45 +110,31 @@
                     </mat-accordion>
                 </mat-card-content>
                 <mat-card-actions>
-                    <button mat-stroked-button (click)="removeFocusedFlower()">Remove Flower</button>
+                    <button mat-raised-button (click)="removeFocusedFlower()"><p class="button-text">Remove Flower</p></button>
                 </mat-card-actions>
             </mat-card>
         </div>
+        <ng-template #detailedElse><div width="300px"></div></ng-template>
     </div>
-
-    <!-- <div class="roundy">
-        <table class="breeding-area">
-            <tr *ngFor="let row of grid by index; let pIndex=index;">
-                <td *ngFor="let flower of row; let dIndex=index;" id="area-{{pIndex}}-{{dIndex}}" class="breeding-cell" (dragover)="allowDrop($event)" (drop)="onFlowerDropped($event)">
-                    <div *ngIf="flower.type !== 'blank'"
-                        attr.data-type="{{ flower.type }}" attr.data-genes="{{flower.genes.red}}{{flower.genes.yellow}}{{flower.genes.white}}{{flower.genes.rose}}"
-                        attr.data-color="{{flower.color}}" attr.data-generation="{{flower.generation}}" attr.data-isSeedBag="{{flower.isSeedBag}}">
-                        <img (click)="putFlowerInFocus(pIndex, dIndex)" class="flower-imgs" src="{{ flower.image_loc }}" layout-fill>
-                    </div>
-                </td>
-            </tr>
-        </table>
         
-    </div> -->
+    
 
+    
 
-
-    <button mat-stroked-button (click)="highlightNeighbors()">Highlight Neighbors</button>
-    <button mat-stroked-button (click)="pollinate()">Pollinate</button>
-
-
-
-    <h3 >Seed Bags</h3>
-
-
-
-    <div class="roundy">
-        <div class="seed-bags">
-            <div class="grid-item" *ngFor="let flower of seed_flowers; let eleIndex=index;" id="bags-{{eleIndex}}" draggable=true (dragstart)="onFlowerDragged($event)"
-            attr.data-type="{{ flower.type }}" attr.data-genes="{{flower.genes.red}}{{flower.genes.yellow}}{{flower.genes.white}}{{flower.genes.rose}}"
-            attr.data-color="{{flower.color}}" attr.data-generation="{{flower.generation}}" attr.data-isSeedBag="{{flower.isSeedBag}}">
-                <img class="flower-imgs" src="{{ flower.image_loc }}">
+        <div class="roundy seed-wrapper">
+            <h3 class="button-text">Seed Bags</h3>
+            <div class="seed-bags"> 
+                <div class="grid-item" *ngFor="let flower of seed_flowers; let eleIndex=index;" id="bags-{{eleIndex}}" draggable=true (dragstart)="onFlowerDragged($event)"
+                attr.data-type="{{ flower.type }}" attr.data-genes="{{flower.genes.red}}{{flower.genes.yellow}}{{flower.genes.white}}{{flower.genes.rose}}"
+                attr.data-color="{{flower.color}}" attr.data-generation="{{flower.generation}}" attr.data-isSeedBag="{{flower.isSeedBag}}">
+                    <img class="flower-imgs" src="{{ flower.image_loc }}">
+                </div>
             </div>
         </div>
+    </div>
+
+    <div class="roundy buttons">
+        <button mat-raised-button (click)="highlightNeighbors()"><p class="button-text">Highlight Neighbors</p></button>
+        <button mat-raised-button (click)="pollinate()"><p class="button-text">Pollinate</p></button>
     </div>
 </div>
