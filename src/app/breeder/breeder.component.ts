@@ -57,6 +57,9 @@ export class BreederComponent implements OnInit {
     catch (e) {} // Either there is no flower in focus or we are at grid boundaries. Not important to handle.
   }
   
+  emptySavedFlowers() {
+    this.saved_flowers = new Array(this.max_saved).fill(flower.blankFlower);
+  }
 
   loadCSV(): void {
     let text;
