@@ -13,6 +13,7 @@ import {MatDividerModule} from '@angular/material/divider';
 import {MatListModule} from '@angular/material/list';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { IntroComponent } from './intro/intro.component';
+import {RouterModule} from '@angular/router';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,9 @@ import { IntroComponent } from './intro/intro.component';
     MatDividerModule,
     MatListModule,
     MatExpansionModule,
+    RouterModule.forRoot([
+      { path: '', component: AppComponent },
+    ])
   ],
   providers: [],
   bootstrap: [AppComponent]
