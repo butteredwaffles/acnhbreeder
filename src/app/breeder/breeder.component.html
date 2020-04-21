@@ -48,12 +48,12 @@
                 </mat-grid-tile>
             </ng-container>
         </mat-grid-list>
-        <div id="detailed-view" rowHeight="fit" *ngIf="focused_flower.type != 'blank' && focused_flower.genes !== {}; else detailedElse">
+        <div class="detailed-view" rowHeight="fit" *ngIf="focused_flower.type !== 'blank' && focused_flower.genes !== {}; else detailedElse">
             <mat-card>
                 <mat-card-header>
-                    <img mat-card-sm-image class="flower-imgs"  src="{{ focused_flower.image_loc }}">
                     <mat-card-title>{{focused_flower.color | titlecase}} {{focused_flower.type | titlecase}}</mat-card-title>
                     <mat-card-subtitle>Origin: {{focused_flower.isSeedBag ? "Seed" : "Bred"}}</mat-card-subtitle>
+                    <img mat-card-sm-image class="flower-imgs"  src="{{ focused_flower.image_loc }}">
                 </mat-card-header>
                 <mat-card-content>   
                     <p> Generation: {{focused_flower.generation}}</p> 
@@ -78,7 +78,7 @@
                             </mat-expansion-panel-header>
                             <mat-list class="family-wrapper">
                                 <mat-list-item *ngFor="let parent of focused_parents" class="focused-family" (click)="putFlowerInFocus(parent.x, parent.y)">
-                                    <img matListAvatar src="{{parent.image_loc}}">
+                                    <img class="flower-imgs" src="{{parent.image_loc}}">
                                     <p matLine>Location: ({{parent.x}}, {{parent.y}})</p>
                                     <p matLine>Genes: {{parent.genes["red"]}} | {{parent.genes["yellow"]}} | {{parent.genes["white"]}} | {{parent.genes["rose"]}}</p>
                                 </mat-list-item>
@@ -90,7 +90,7 @@
                             </mat-expansion-panel-header>
                             <mat-list class="family-wrapper">
                                 <mat-list-item *ngFor="let child of focused_children" class="focused-family" (click)="putFlowerInFocus(child.x, child.y)">
-                                    <img matListAvatar src="{{child.image_loc}}">
+                                    <img class="flower-imgs" src="{{child.image_loc}}">
                                     <p matLine>Location: ({{child.x}}, {{child.y}})</p>
                                     <p matLine>Genes: {{child.genes["red"]}} | {{child.genes["yellow"]}} | {{child.genes["white"]}} | {{child.genes["rose"]}}</p>
                                 </mat-list-item>
@@ -114,7 +114,23 @@
                 </mat-card-actions>
             </mat-card>
         </div>
-        <ng-template #detailedElse><div width="300px"></div></ng-template>
+        <ng-template #detailedElse>
+            <div class="detailed-view" rowHeight="fit">
+                <mat-card>
+                    <mat-card-header>
+                        <mat-card-title>N/A</mat-card-title>
+                        <mat-card-subtitle>N/A</mat-card-subtitle>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <p class="button-text">There is currently no flower selected!</p>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+        </ng-template>
+        <h3 class="button-text">Saved Flowers</h3>
+        <div id="saved" class="seed-bags">
+            
+        </div>
     </div>
         
     

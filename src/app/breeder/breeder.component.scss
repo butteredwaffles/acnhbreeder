@@ -9,10 +9,6 @@ mat-divider {
     padding: 4px;
 }
 
-mat-card {
-    width: 300px;
-}
-
 h3 {
     text-align: center;
 }
@@ -75,26 +71,42 @@ button {
 }
 
 
-.breeding-area{
+.breeding-area {
     background-color: green;
     background-image: url("../../assets/images/grass.bmp");
     background-size: 70px 70px;
-    width: $grid-size;
-    height: $grid-size;
+    min-width: $grid-size;
+    min-height: $grid-size;
     margin: 20px;
     display: inline-block;
     border: 10px dotted green;
 }
 
 .breeding-mats {
-    flex: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-}
+    display: grid;
+    grid-template-columns: [col1-start] 2fr [col2-start] auto [col3-start] auto [col3-end];
+    grid-template-rows: [row1-start] auto [row2-start] auto [row3-start] auto [row3-end] ;
+    width: 100vw;
 
-.breeding-mats > div {
-    flex: 1 1 auto;
+    .breeding-area {
+        grid-column: col1-start;
+        grid-row: row1-start / row2-end;
+    }
+
+    .detailed-view {
+        grid-column: col2-start;
+        grid-row: row1-start;
+    }
+
+    #saved {
+        grid-column: col2-start;
+        grid-row: row3-start;
+    }
+
+    .seed-wrapper {
+        grid-column: col3-start;
+        grid-row: row1-start / row3-end;
+    }
 }
 
 .seed-wrapper:before, .seed-wrapper:after {
@@ -102,7 +114,6 @@ button {
 }
 
 .seed-wrapper {
-    width: 100px;
     overflow: scroll;
 }
 
@@ -166,9 +177,8 @@ button {
 }
 
 
-#detailed-view {
-    min-width: 20%;
-    max-width: 30%;
+.detailed-view {
+    min-width: 40%;
     padding: 30px;
     display: inline-block;
     vertical-align: top;
@@ -177,24 +187,24 @@ button {
     overflow: scroll;
 }
 
-#detailed-view[hidden] {
+.detailed-view[hidden] {
     display: none;
 }
 
-#detailed-view img {
+.detailed-view img {
     width: 20%;
 }
 
-#detailed-view button {
+.detailed-view button {
     margin: 0 auto;
     display: block;
 }
 
-#detailed-view[hidden] button {
-    display: none;
-}
 
 #gene-view-table {
     padding: 0;
 }
 
+#saved {
+    height: 70px;
+}
