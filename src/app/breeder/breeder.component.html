@@ -1,162 +1,147 @@
 <div class="container">
     <div class="roundy form-options">
         <form [formGroup]="gridOptions" (ngSubmit)="onSubmit(gridOptions.value)">
-                    <div class="options-div">
-                        <label for="rows" class="button-text">Rows: </label>
-                        <input id="rows" type="number" min="3" max="15" formControlName="rows" numeric-only required>
-                        <!-- flowerValidation -->
-                        <div *ngIf="submitted && flowerValidation.rows.errors">
-                            There must be a minimum of three rows and a maximum of fifteen.
-                        </div>
-                    </div>
+            <div class="options-div">
+                <label for="rows" class="button-text">Rows: </label>
+                <input id="rows" type="number" min="3" max="15" formControlName="rows" numeric-only required>
+            </div>
 
-                    <div class="options-div">
-                        <label for="columns" class="button-text">Columns: </label>
-                        <input id="columns" type="number" min="3" max="15" formControlName="columns" numeric-only required >
-                        <!-- flowerValidation -->
-                        <div *ngIf="submitted && flowerValidation.columns.errors">
-                            There must be a minimum of three columns and a maximum of fifteen.
-                        </div>
-                    </div>
-                <div class="options-div">
-                    <label for="breedrate" class="button-text">Breeding Rate: </label>
-                    <input id="breedrate" type="number" min="0.01" max="1" formControlName="breedrate" numeric-only required >
-                    <!-- flowerValidation -->
-                    <div *ngIf="submitted && flowerValidation.breedrate.errors">
-                        Breeding success rate must be between 0.01 and 1.0.
-                    </div>
-                </div>
-                <!-- just.... worry about validation later... no worry now-->
-                <button type="submit"><p class="button-text">Update Grid</p></button>  
+            <div class="options-div">
+                <label for="columns" class="button-text">Columns: </label>
+                <input id="columns" type="number" min="3" max="15" formControlName="columns" numeric-only required>
+            </div>
+            <div class="options-div">
+                <label for="breedrate" class="button-text">Breeding Success Rate: </label>
+                <input id="breedrate" type="number" min="0.01" max="1" formControlName="breedrate" numeric-only required>
+            </div>
+            <button type="submit">
+                <p class="button-text">Update Grid</p>
+            </button>
         </form>
+        <p *ngIf="flowerValidation.rows.errors">
+            There must be a minimum of three rows and a maximum of fifteen.
+        </p>
+        <p *ngIf="flowerValidation.columns.errors">
+            There must be a minimum of three columns and a maximum of fifteen.
+        </p>
+        <p *ngIf="flowerValidation.breedrate.errors">
+            Breeding success rate must be between 0.01 and 1.0.
+        </p>
     </div>
 
-
-    
-        <div class="breeding-mats">
-            <div class="roundy">
-        <mat-grid-list cols="{{gridColumns}}" rowHeight="fit" class="breeding-area centered">
-            <ng-container *ngFor="let row of grid; let pIndex=index;" >
-                <mat-grid-tile *ngFor="let flower of row; let dIndex=index;" id="area-{{pIndex}}-{{dIndex}}" 
-                [ngClass]="{'highlighted': focused_flower.x === pIndex && focused_flower.y === dIndex && flower.type !== 'blank', 'highlighted-child': focused_children.indexOf(flower) >= 0, 'highlighted-parent': focused_parents.indexOf(flower) >= 0}" class="breeding-cell" 
-                (dragover)="allowDrop($event)" (drop)="onFlowerDropped($event)">
-                    <div *ngIf="flower.type !== 'blank'"
-                    attr.data-type="{{ flower.type }}" attr.data-genes="{{flower.genes.red}}{{flower.genes.yellow}}{{flower.genes.white}}{{flower.genes.rose}}"
-                    attr.data-color="{{flower.color}}" attr.data-generation="{{flower.generation}}" attr.data-isSeedBag="{{flower.isSeedBag}}">
-                        <img draggable=true (dragstart)="onFlowerDragged($event)" (click)="putFlowerInFocus(pIndex, dIndex)" class="grid-imgs" src="{{ flower.image_loc }}" layout-fill>
-                    </div>
-                </mat-grid-tile>
-            </ng-container>
-        </mat-grid-list>
-        <div class="detailed-view" rowHeight="fit" *ngIf="focused_flower.type !== 'blank' && focused_flower.genes !== {}; else detailedElse">
-            <mat-card>
-                <mat-card-header>
-                    <mat-card-title>{{focused_flower.color | titlecase}} {{focused_flower.type | titlecase}}</mat-card-title>
-                    <mat-card-subtitle>Origin: {{focused_flower.isSeedBag ? "Seed" : "Bred"}}</mat-card-subtitle>
-                    <img mat-card-sm-image class="flower-imgs"  src="{{ focused_flower.image_loc }}">
-                </mat-card-header>
-                <mat-card-content>   
-                    <p> Generation: {{focused_flower.generation}}</p> 
-                    <table id="gene-view-table">                    
-                        <tr>
-                            <td>Red: </td>
-                            <td>{{focused_flower.genes["red"]}}</td>
-                            <td>Yellow:</td>
-                            <td>{{focused_flower.genes["yellow"]}}</td>
-                        </tr>
-                        <tr>
-                            <td>White:</td>
-                            <td>{{focused_flower.genes["white"]}}</td>
-                            <td>Rose:</td>                        
-                            <td>{{focused_flower.genes["rose"]}}</td>
-                        </tr>
-                    </table>
-                    <mat-accordion>
-                        <mat-expansion-panel *ngIf="focused_parents.length !== 0">
-                            <mat-expansion-panel-header>
-                                <mat-panel-title>Parents</mat-panel-title>
-                            </mat-expansion-panel-header>
-                            <mat-list class="family-wrapper">
-                                <mat-list-item *ngFor="let parent of focused_parents" class="focused-family" (click)="putFlowerInFocus(parent.x, parent.y)">
-                                    <img class="flower-imgs" src="{{parent.image_loc}}">
-                                    <p matLine>Location: ({{parent.x}}, {{parent.y}})</p>
-                                    <p matLine>Genes: {{parent.genes["red"]}} | {{parent.genes["yellow"]}} | {{parent.genes["white"]}} | {{parent.genes["rose"]}}</p>
-                                </mat-list-item>
-                            </mat-list>
-                        </mat-expansion-panel>
-                        <mat-expansion-panel *ngIf="focused_children.length !== 0">
-                            <mat-expansion-panel-header>
-                                <mat-panel-title>Direct Children</mat-panel-title>
-                            </mat-expansion-panel-header>
-                            <mat-list class="family-wrapper">
-                                <mat-list-item *ngFor="let child of focused_children" class="focused-family" (click)="putFlowerInFocus(child.x, child.y)">
-                                    <img class="flower-imgs" src="{{child.image_loc}}">
-                                    <p matLine>Location: ({{child.x}}, {{child.y}})</p>
-                                    <p matLine>Genes: {{child.genes["red"]}} | {{child.genes["yellow"]}} | {{child.genes["white"]}} | {{child.genes["rose"]}}</p>
-                                </mat-list-item>
-                            </mat-list>
-                        </mat-expansion-panel>
-                        <mat-expansion-panel *ngIf="focused_possibilities.length !== 0">
-                            <mat-expansion-panel-header>
-                                <mat-panel-title>Child Possibilities</mat-panel-title>
-                            </mat-expansion-panel-header>
-                            <mat-list class="family-wrapper">
-                                <mat-list-item *ngFor="let item of focused_possibilities" class="focused-family poss-wrapper">
-                                    <p>{{ item.location }}:</p>
-                                    <img class="flower-imgs poss-imgs" *ngFor="let poss of item.colors" src="{{poss}}">
-                                </mat-list-item>
-                            </mat-list>
-                        </mat-expansion-panel>
-                    </mat-accordion>
-                </mat-card-content>
-                <mat-card-actions>
-                    <button mat-raised-button (click)="removeFocusedFlower()"><p class="button-text">Remove Flower</p></button>
-                </mat-card-actions>
-            </mat-card>
-        </div>
-        <ng-template #detailedElse>
-            <div class="detailed-view" rowHeight="fit">
+    <div class="breeding-mats">
+        <div class="roundy">
+            <mat-grid-list cols="{{gridColumns}}" rowHeight="fit" class="breeding-area centered">
+                <ng-container *ngFor="let row of grid; let pIndex=index;">
+                    <mat-grid-tile *ngFor="let flower of row; let dIndex=index;" id="area-{{pIndex}}-{{dIndex}}" [ngClass]="{'highlighted': focused_flower.x === pIndex && focused_flower.y === dIndex && flower.type !== 'blank', 'highlighted-child': focused_children.indexOf(flower) >= 0, 'highlighted-parent': focused_parents.indexOf(flower) >= 0}" class="breeding-cell" (dragover)="allowDrop($event)" (drop)="onFlowerDropped($event)">
+                        <div *ngIf="flower.type !== 'blank'" attr.data-type="{{ flower.type }}" attr.data-genes="{{flower.genes.red}}{{flower.genes.yellow}}{{flower.genes.white}}{{flower.genes.rose}}" attr.data-color="{{flower.color}}" attr.data-generation="{{flower.generation}}" attr.data-isSeedBag="{{flower.isSeedBag}}">
+                            <img draggable=true (dragstart)="onFlowerDragged($event)" (click)="putFlowerInFocus(pIndex, dIndex)" class="grid-imgs" src="{{ flower.image_loc }}" layout-fill>
+                        </div>
+                    </mat-grid-tile>
+                </ng-container>
+            </mat-grid-list>
+            <div class="detailed-view" rowHeight="fit" *ngIf="focused_flower.type !== 'blank' && focused_flower.genes !== {}; else detailedElse">
                 <mat-card>
                     <mat-card-header>
-                        <mat-card-title>N/A</mat-card-title>
-                        <mat-card-subtitle>N/A</mat-card-subtitle>
+                        <mat-card-title>{{focused_flower.color | titlecase}} {{focused_flower.type | titlecase}}</mat-card-title>
+                        <mat-card-subtitle>Origin: {{focused_flower.isSeedBag || focused_flower.isHybridIsle ? "Seed/Island" : "Bred"}}</mat-card-subtitle>
+                        <img mat-card-sm-image class="flower-imgs" src="{{ focused_flower.image_loc }}">
                     </mat-card-header>
                     <mat-card-content>
-                        <p class="button-text">There is currently no flower selected!</p>
+                        <p> Generation: {{focused_flower.generation}}</p>
+                        <table id="gene-view-table">
+                            <tr>
+                                <td>Red: </td>
+                                <td>{{focused_flower.genes["red"]}}</td>
+                                <td>Yellow:</td>
+                                <td>{{focused_flower.genes["yellow"]}}</td>
+                            </tr>
+                            <tr>
+                                <td>White:</td>
+                                <td>{{focused_flower.genes["white"]}}</td>
+                                <td>Rose:</td>
+                                <td>{{focused_flower.genes["rose"]}}</td>
+                            </tr>
+                        </table>
+                        <mat-accordion>
+                            <mat-expansion-panel *ngIf="focused_parents.length !== 0">
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>Parents</mat-panel-title>
+                                </mat-expansion-panel-header>
+                                <mat-list class="family-wrapper">
+                                    <mat-list-item *ngFor="let parent of focused_parents" class="focused-family" (click)="putFlowerInFocus(parent.x, parent.y)">
+                                        <img class="flower-imgs" src="{{parent.image_loc}}">
+                                        <p matLine>Location: ({{parent.x}}, {{parent.y}})</p>
+                                        <p matLine>Genes: {{parent.genes["red"]}} | {{parent.genes["yellow"]}} | {{parent.genes["white"]}} | {{parent.genes["rose"]}}</p>
+                                    </mat-list-item>
+                                </mat-list>
+                            </mat-expansion-panel>
+                            <mat-expansion-panel *ngIf="focused_children.length !== 0">
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>Direct Children</mat-panel-title>
+                                </mat-expansion-panel-header>
+                                <mat-list class="family-wrapper">
+                                    <mat-list-item *ngFor="let child of focused_children" class="focused-family" (click)="putFlowerInFocus(child.x, child.y)">
+                                        <img class="flower-imgs" src="{{child.image_loc}}">
+                                        <p matLine>Location: ({{child.x}}, {{child.y}})</p>
+                                        <p matLine>Genes: {{child.genes["red"]}} | {{child.genes["yellow"]}} | {{child.genes["white"]}} | {{child.genes["rose"]}}</p>
+                                    </mat-list-item>
+                                </mat-list>
+                            </mat-expansion-panel>
+                            <mat-expansion-panel *ngIf="focused_possibilities.length !== 0">
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>Child Possibilities</mat-panel-title>
+                                </mat-expansion-panel-header>
+                                <mat-list class="family-wrapper">
+                                    <mat-list-item *ngFor="let item of focused_possibilities" class="focused-family poss-wrapper">
+                                        <p>{{ item.location }}:</p>
+                                        <img class="flower-imgs poss-imgs" *ngFor="let poss of item.colors" src="{{poss}}">
+                                    </mat-list-item>
+                                </mat-list>
+                            </mat-expansion-panel>
+                        </mat-accordion>
                     </mat-card-content>
+                    <mat-card-actions>
+                        <button mat-raised-button (click)="removeFocusedFlower()">
+                            <p class="button-text">Remove Flower</p>
+                        </button>
+                    </mat-card-actions>
                 </mat-card>
             </div>
-        </ng-template>
-        <h3 class="button-text">Saved Flowers</h3>
-        <div id="saved" [style.--savednum]="saved_flowers.length" (dragover)="allowDrop($event)" (drop)="onFlowerDropped($event)">
-            <div *ngFor="let flower of saved_flowers; let eleIndex=index;">
-                <div *ngIf="flower !== undefined" [hidden]="flower.type === 'blank'" class="grid-item" id="save-{{eleIndex}}" draggable=true (dragstart)="onFlowerDragged($event)"
-                    attr.data-type="{{ flower.type }}" attr.data-genes="{{flower.genes.red}}{{flower.genes.yellow}}{{flower.genes.white}}{{flower.genes.rose}}">
-                    <img draggable=true (dragstart)="onFlowerDragged($event)" class="grid-imgs" src="{{ flower.image_loc }}">
+            <ng-template #detailedElse>
+                <div class="detailed-view" rowHeight="fit">
+                    <mat-card>
+                        <mat-card-header>
+                            <mat-card-title>N/A</mat-card-title>
+                            <mat-card-subtitle>N/A</mat-card-subtitle>
+                        </mat-card-header>
+                        <mat-card-content>
+                            <p class="button-text">There is currently no flower selected!</p>
+                        </mat-card-content>
+                    </mat-card>
+                </div>
+            </ng-template>
+            <h3 class="button-text">Saved Flowers</h3>
+            <div id="saved" [style.--savednum]="saved_flowers.length" (dragover)="allowDrop($event)" (drop)="onFlowerDropped($event)">
+                <div *ngFor="let flower of saved_flowers; let eleIndex=index;">
+                    <div *ngIf="flower !== undefined" [hidden]="flower.type === 'blank'" class="grid-item" id="save-{{eleIndex}}" draggable=true (dragstart)="onFlowerDragged($event)" attr.data-type="{{ flower.type }}" attr.data-genes="{{flower.genes.red}}{{flower.genes.yellow}}{{flower.genes.white}}{{flower.genes.rose}}">
+                        <img draggable=true (dragstart)="onFlowerDragged($event)" class="grid-imgs" src="{{ flower.image_loc }}">
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-        
-    
-
-    
 
         <div class="roundy seed-wrapper">
             <h3 class="button-text">Seed Bags</h3>
-            <div class="seed-bags"> 
-                <div class="grid-item" *ngFor="let flower of seed_flowers; let eleIndex=index;" id="bags-{{eleIndex}}" draggable=true (dragstart)="onFlowerDragged($event)"
-                attr.data-type="{{ flower.type }}" attr.data-genes="{{flower.genes.red}}{{flower.genes.yellow}}{{flower.genes.white}}{{flower.genes.rose}}"
-                attr.data-color="{{flower.color}}" attr.data-generation="{{flower.generation}}" attr.data-isSeedBag="{{flower.isSeedBag}}">
+            <div class="seed-bags">
+                <div class="grid-item" *ngFor="let flower of seed_flowers; let eleIndex=index;" id="bags-{{eleIndex}}" draggable=true (dragstart)="onFlowerDragged($event)" attr.data-type="{{ flower.type }}" attr.data-genes="{{flower.genes.red}}{{flower.genes.yellow}}{{flower.genes.white}}{{flower.genes.rose}}" attr.data-color="{{flower.color}}" attr.data-generation="{{flower.generation}}" attr.data-isSeedBag="{{flower.isSeedBag}}">
                     <img class="flower-imgs" src="{{ flower.image_loc }}">
                 </div>
             </div>
             <mat-divider></mat-divider>
             <h3 class="button-text">Hybrid Island</h3>
-            <div class="seed-bags"> 
-                <div class="grid-item" *ngFor="let flower of isle_flowers; let eleIndex=index;" id="isle-{{eleIndex}}" draggable=true (dragstart)="onFlowerDragged($event)"
-                attr.data-type="{{ flower.type }}" attr.data-genes="{{flower.genes.red}}{{flower.genes.yellow}}{{flower.genes.white}}{{flower.genes.rose}}"
-                attr.data-color="{{flower.color}}" attr.data-generation="{{flower.generation}}" attr.data-isSeedBag="{{flower.isSeedBag}}">
+            <div class="seed-bags">
+                <div class="grid-item" *ngFor="let flower of isle_flowers; let eleIndex=index;" id="isle-{{eleIndex}}" draggable=true (dragstart)="onFlowerDragged($event)" attr.data-type="{{ flower.type }}" attr.data-genes="{{flower.genes.red}}{{flower.genes.yellow}}{{flower.genes.white}}{{flower.genes.rose}}" attr.data-color="{{flower.color}}" attr.data-generation="{{flower.generation}}" attr.data-isSeedBag="{{flower.isSeedBag}}">
                     <img class="flower-imgs" src="{{ flower.image_loc }}">
                 </div>
             </div>
@@ -164,8 +149,11 @@
     </div>
 
     <div class="roundy buttons">
-        <button mat-raised-button (click)="highlightNeighbors()"><p class="button-text">Highlight Neighbors</p></button>
-        <button mat-raised-button (click)="pollinate()"><p class="button-text">Pollinate</p></button>
-        <button mat-raised-button (click)="emptySavedFlowers()"><p class="button-text">Empty Saved Flowers</p></button>
+        <button mat-raised-button (click)="pollinate()">
+            <p class="button-text">Pollinate</p>
+        </button>
+        <button mat-raised-button (click)="emptySavedFlowers()">
+            <p class="button-text">Empty Saved Flowers</p>
+        </button>
     </div>
 </div>

@@ -26,6 +26,8 @@ $acnhbreeder-theme: mat-light-theme($acnhbreeder-primary, $acnhbreeder-accent, $
 // that you are using.
 @include angular-material-theme($acnhbreeder-theme);
 
-
+*{
+    font-family: "Arial Rounded MT Bold", -apple-system, BlinkMacSystemFont, "Segoe UI";
+}
 body { height: 100%; width:100%; background-color: #e9f5eb; justify-content: center;}
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-image: url("assets/images/grass.bmp");}

@@ -1,0 +1,50 @@
+$font-color: rgb(10, 83, 52);
+
+.roundy {
+    padding: 5px 30px 10px 30px;
+    background-color: rgb(251,235,168);
+    border-radius: 30px;
+    -webkit-box-shadow: 0 3px 0 0 rgba(0,0,0,0.15);
+    -moz-box-shadow: 0 3px 0 0 rgba(0,0,0,0.15);
+    box-shadow: 0 3px 0 0 rgba(0,0,0,0.15);
+}
+
+.container {
+    width: 95%;
+    margin: 0 auto;
+    margin-top: 10px;
+}
+
+.panels {
+    margin-top: 10px;
+}
+
+.panels p, .panels ul {
+    color: $font-color;
+    font-size: 1.3em;
+}
+
+.panel-headers {
+    border-radius: 20px;
+}
+
+.section-titles {
+    color: $font-color;
+    font-size: 1.5em;
+    text-align: center;
+}
+
+#title {
+    font-size: 5em;
+    font-weight: bold;
+    text-align: center;
+    color: $font-color;
+    margin-top: 15px;
+    margin-bottom: 4px;
+}
+
+#subtitle {
+    font-size: 2em;
+    text-align: center;
+    color: $font-color;
+}

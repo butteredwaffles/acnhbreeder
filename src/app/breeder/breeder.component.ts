@@ -225,9 +225,10 @@ export class BreederComponent implements OnInit {
       let ind = event.dataTransfer.getData("flower-id").slice(5).split('-');
       let seedX = parseInt(ind[0]);
       let seedY = parseInt(ind[1]);
-      this.grid[gridX][gridY] = flower.Flower.fromJson(event.dataTransfer.getData("flower-data"));
-      let newFlower: flower.Flower = this.grid[gridX][gridY];
+      let newFlower = flower.Flower.fromJson(event.dataTransfer.getData("flower-data"));
       newFlower.x, newFlower.y = gridX, gridY;
+      this.grid[gridX][gridY] = newFlower;
+      
       if (deletionFlag) {
         this.grid[seedX][seedY] = flower.blankFlower;
       }
@@ -371,6 +372,7 @@ export class BreederComponent implements OnInit {
                 if (pollispaces[istring] === undefined) {
                   pollispaces[istring] = [];
                 }
+                this.grid[x][y].x = x, this.grid[x][y].y = y;
                 pollispaces[istring].push({pollinated_by: this.grid[x][y]});
               }
             }
@@ -387,7 +389,8 @@ export class BreederComponent implements OnInit {
         for (let n = 0; n < values.length-1; n++) {
           let par1: flower.Flower = values[n].pollinated_by;
           let par2: flower.Flower = values[n+1].pollinated_by;
-          if (par1.type === par2.type && !par1.has_bred && !par2.has_bred) {
+          let neighboring = Array.from(flower.findNeighbors(this.grid, par1.x, par1.y), two => this.grid[two[0]][two[1]]).includes(par2);
+          if (par1.type === par2.type && !par1.has_bred && !par2.has_bred && neighboring) {
             // this spot is free and ready to be breeded
             if (this.grid[x][y].type === flower.FlowerType.Blank) {
               if (Math.random() <= this.breed_success_rate) {
@@ -406,10 +409,10 @@ export class BreederComponent implements OnInit {
                 res.parents.push(par2);
                 this.grid[x][y] = res
                 flowerBred = true;
+                par1.has_bred = true;
+                par2.has_bred = true;
                 Log.info(`${par1.color.toUpperCase()} ${par1.type.toUpperCase()} (${par1.x}, ${par1.y}) and ${par2.color.toUpperCase()} ${par2.type.toUpperCase()} (${par2.x}, ${par2.y}) successfully bred ${res.color.toUpperCase()} ${res.type.toUpperCase()} (${res.x}, ${res.y}) with genes RED-${res.genes["red"]} YELLOW-${res.genes["yellow"]} WHITE-${res.genes["white"]} ROSE-${res.genes["rose"]}.`, "blue");
               }
-              par1.has_bred = true;
-              par2.has_bred = true;
             }
           }
         }

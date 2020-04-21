@@ -1,0 +1,73 @@
+<div class="roundy container">
+    <p id="title">ACNH GREENHOUSE</p>
+    <p id="subtitle">Visualize how flowers are born!</p>
+    <mat-divider id="header-divider"></mat-divider>
+    <mat-expansion-panel class="panels">
+        <mat-expansion-panel-header [collapsedHeight]="'80px'" class="panel-headers">
+            <mat-panel-title class="section-titles">How Flower Reproduction Works</mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-divider></mat-divider>
+        <p>There are eight flower types in New Horizons: roses, tulips, pansies, cosmos, lillies, hyacinths, windflowers, and mums.</p>
+        <p>If two flowers of the same type are within a 3x3 area of each other, they can crossbreed to produce a new flower. 
+            Flowers in New Horizons can also self-duplicate, but that is not emulated on this website.</p>
+        <p>The following conditions must also be met for two flowers before they can breed:</p>
+        <ul>
+            <li>They must be watered.</li>
+            <li>They must be at least in their second-last stage of development.</li>
+            <li>They cannot have produced an offspring that day already.</li>
+            <li>One must have empty space directly around them to produce a flower.</li>
+        </ul>
+        <p>If all these conditions are met, the game rolls to decide if the two successfully breed. The chance of success is rolled for both flowers, and if one succeeds, they will breed.
+            This chance starts at 5% and increases by 5% every day the flower has been watered, starting at four days in a row. People from other towns watering your plants also increases
+            the chances of success by up to 75% (five unique visitors). All increases to the success rate are reset if the flower is dug up or successfully reproduces. The increases
+            are also reset if the flower self-duplicates. (Self-duplication shares the same chance % as breeding, but it only occurs if there is no eligible mate in the area.)
+        </p>
+        <p>The child's genes are decided using a Punnett Square, and each possible gene combination has an associated color. Unlike in previous games, there is 
+            no extra mutations that can happen in ACNH.
+        </p>
+    </mat-expansion-panel>
+    <mat-expansion-panel class="panels">
+        <mat-expansion-panel-header [collapsedHeight]="'80px'" class="panel-headers">
+            <mat-panel-title class="section-titles">How to Use This Tool</mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-divider></mat-divider>
+        <p>Breeding flowers is fairly easy! (Here, anyway...)</p>
+        <p>You can edit the amount of rows/columns in the graph with the options at the top, since a 5x5 grid is fairly small. To reset the grid, just click "Update Grid."
+            It will clear all the flowers currently there.
+        </p>
+        <p>Breeding success rate changes exactly what it says it does. To make things simple, instead of the complicated calculation the game does with 
+            tracking each flower's consecutive days watered, each flower has the same chances of reproduction.</p>
+        <p>To place a flower on the grid, drag a flower from the "Seed Bags" or "Hybrid Island" sections onto the grid. Seed bag flowers are the ones you can buy from Nook's Cranny,
+            and Hybrid Island flowers are flowers you can dig up and bring home from the mystery island full of hybrids.
+        </p>
+        <p>Once a flower is on the grid, you can click on it to view more information about the flower. It will show you...</p>
+        <ul>
+            <li>The flower's type and color.</li>
+            <li>The flower's origin (whether it is from seed bag, island, or breeding).</li>
+            <li>The flower's generation (what "day" it was born on). Flowers with generation 1 are from seed bags/islands.</li>
+            <li>The flower's genes. These decide color.</li>
+            <li>The flower's parents (if they are on the grid). You can click on a parent to put that parent in focus. Parents of focused flowers will be highlighted green on the grid.</li>
+            <li>The flower's children (if they are on the grid). You can click on a child to put it in foucs. Children of focused flowers will be highlighted blue on the grid.</li>
+            <li>The flowers <strong>possible</strong> children. This shows the possible colors that can result if a flower bred with each one of its neighbors.</li>
+        </ul>
+        <p>You also have the ability to remove the flower.</p>
+        <p>If there is a flower that has spectacular genes (for example, you found a rose that could parent a blue rose) you can drag it to the "saved" section. 
+            Flowers in this section persist after the grid has been cleared, though they will be gone if you refresh the page.
+        </p>
+        <p>To run the breeder, just click the "Pollinate" button and enjoy the results!</p>
+    </mat-expansion-panel>
+    <mat-expansion-panel class="panels">
+        <mat-expansion-panel-header [collapsedHeight]="'80px'" class="panel-headers">
+            <mat-panel-title class="section-titles">About / Credits</mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-divider></mat-divider>
+        <p>Thank you to Aeter#9823 (twitter: @aiterusawato), backwardsn#7201, Ninji#1624 (twitter: @_ninji), and Paleh#2526 for all the work they have done organizing and 
+        discovering this data! I sourced the all of the data used to create this tool from their spreadsheet, located <a href="https://docs.google.com/spreadsheets/d/1rbYbQ0i3SuTu30KTma5dO4uuJWr_SjOZXA1l4UOIHWo/edit#gid=528655130">here</a>. 
+        Could not have done this otherwise. Thank you to my friend Sigia for helping me sort out the many, many issues I had during development and helping with frontend.</p>
+        <p>I am an avid flower breeder (have far too many hybrids in my town...), and that is what inspired me to make this website. I just thought it would be neat 
+            to see what happens "behind-the-scenes" everyday. I am a high school student who wants to go into Computer Science, but not necessarily work on front-end web 
+            development, haha. So, while this may not be the most aesthetically pleasing thing, I did try my best on it.
+        </p>
+        <p>If you find a bug, want to request a new feature, or have any other feedback, please contact me at Nooqwaffle#1009 on Discord or leave an issue in the repository.</p>
+    </mat-expansion-panel>
+</div>

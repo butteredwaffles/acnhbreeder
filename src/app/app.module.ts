@@ -12,11 +12,13 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import {MatDividerModule} from '@angular/material/divider'; 
 import {MatListModule} from '@angular/material/list';
 import {MatExpansionModule} from '@angular/material/expansion';
+import { IntroComponent } from './intro/intro.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     BreederComponent,
+    IntroComponent,
   ],
   imports: [
     BrowserModule,
@@ -29,7 +31,7 @@ import {MatExpansionModule} from '@angular/material/expansion';
     MatButtonModule,
     MatDividerModule,
     MatListModule,
-    MatExpansionModule
+    MatExpansionModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

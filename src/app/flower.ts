@@ -111,7 +111,7 @@ export class Flower {
 
     static fromJson(json: string) {
         let ob = JSON.parse(json);
-        return new Flower({parents: ob.parents, id: ob.opt_id, type: FlowerType[ob.type[0].toUpperCase() + ob.type.slice(1)], red_gene: ob.genes.red, yellow_gene: ob.genes.yellow, white_gene: ob.genes.white, rose_gene: ob.genes.rose, color: ob.color, generation: ob.generation, isSeedBag: ob.isSeedBag});
+        return new Flower({parents: ob.parents, id: ob.opt_id, type: FlowerType[ob.type[0].toUpperCase() + ob.type.slice(1)], red_gene: ob.genes.red, yellow_gene: ob.genes.yellow, white_gene: ob.genes.white, rose_gene: ob.genes.rose, color: ob.color, generation: ob.generation, isSeedBag: ob.isSeedBag, isHybrid: ob.isHybridIsle});
     }
 }
 
