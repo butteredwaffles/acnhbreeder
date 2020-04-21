@@ -2,6 +2,7 @@
     <p id="title">ACNH GREENHOUSE</p>
     <p id="subtitle">Visualize how flowers are born!</p>
     <mat-divider id="header-divider"></mat-divider>
+    <p *ngIf="screenWidth < 1200">* This website may not work on small screens! *</p>
     <mat-expansion-panel class="panels">
         <mat-expansion-panel-header [collapsedHeight]="'80px'" class="panel-headers">
             <mat-panel-title class="section-titles">How Flower Reproduction Works</mat-panel-title>
@@ -22,7 +23,7 @@
             the chances of success by up to 75% (five unique visitors). All increases to the success rate are reset if the flower is dug up or successfully reproduces. The increases
             are also reset if the flower self-duplicates. (Self-duplication shares the same chance % as breeding, but it only occurs if there is no eligible mate in the area.)
         </p>
-        <p>The child's genes are decided using a Punnett Square, and each possible gene combination has an associated color. Unlike in previous games, there is 
+        <p>The child's genes are decided using a Punnett Square, and each possible gene combination has an associated color. Unlike in previous games, there are 
             no extra mutations that can happen in ACNH.
         </p>
     </mat-expansion-panel>
