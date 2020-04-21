@@ -12,9 +12,12 @@ import { HttpClient } from '@angular/common/http';
 
 export class BreederComponent implements OnInit {
   breed_success_rate = .5;
+  max_saved = 10;
+
   all_possible_flowers: flower.Flower[] = [];
   seed_flowers: flower.Flower[] = [];
   isle_flowers: flower.Flower[] = [];
+  saved_flowers: flower.Flower[] = new Array(this.max_saved).fill(flower.blankFlower);
   gridOptions;
   gridRows: number = 5;
   gridColumns: number = 5;
@@ -95,7 +98,6 @@ export class BreederComponent implements OnInit {
   }
 
   onSubmit(gridOptionsData): void {
-
     //so the user wont get "error uwu uwu uwu" as soon as they type a fuckle
     this.submitted = true;
 
@@ -134,22 +136,10 @@ export class BreederComponent implements OnInit {
       columns: [this.gridColumns, [Validators.required, Validators.min(3), Validators.max(15)]],
       breedrate: [this.breed_success_rate, [Validators.required, Validators.min(0.01), Validators.max(1.0)]]
     });
-    //flower.findNeighbors(this.grid, 0, 0);
+    console.log(this.saved_flowers);
   }
 
-  //get Form for validation bullhecc in html, ppl usually use just "f" tho
   get flowerValidation () { return this.gridOptions.controls; }
-
-  // updateGrid() {
-  //   for (let x = 0; x < this.gridRows; x++) {
-  //     for (let y = 0; y < this.gridColumns; y++) {
-  //       let flo = this.grid[x][y];
-  //       for (let parent of flo.parents) {
-  //         if (this.grid[parent.x][parent.y]) !=
-  //       }
-  //     }
-  //   }
-  // }
 
   onFlowerDragged(event: any) {
     let id = event.target.parentElement.id;
@@ -172,6 +162,10 @@ export class BreederComponent implements OnInit {
       data = JSON.stringify(this.seed_flowers[seedX]);
       drag_type = "bags";
     }
+    else if (id.includes("save")) {
+      data = JSON.stringify(this.saved_flowers[seedX]);
+      drag_type = "save";
+    }
     else {
       data = JSON.stringify(this.isle_flowers[seedX]);
       drag_type = "isle";
@@ -186,35 +180,56 @@ export class BreederComponent implements OnInit {
   }
 
   onFlowerDropped(event: any) {
-    let deletionFlag = false;
     event.preventDefault();
-    if (event.dataTransfer.getData("drag-type") === "area") {
-      deletionFlag = true;
-    }
     let id = event.target.id;
     let id_ele = event.target;
     // ensures that no matter where the user drags the flower wil be replaced
+    if (id === "saved") {
+      id_ele = event.target.children[0].children[0];
+      id = id_ele.id;
+    }
+
     while (id == "") {
       id_ele = id_ele.parentElement;
       id = id_ele.id;
     }
-
-    // New location of flower
+    let drag_type = event.dataTransfer.getData("drag-type");
     let indexes = id.slice(5).split('-');
-    let gridX = parseInt(indexes[0]);
-    let gridY = parseInt(indexes[1]);
-
-    // Old location of flower
-    let ind = event.dataTransfer.getData("flower-id").slice(5).split('-');
-    let seedX = parseInt(ind[0]);
-    let seedY = parseInt(ind[1]);
-    this.grid[gridX][gridY] = flower.Flower.fromJson(event.dataTransfer.getData("flower-data"));
-    let newFlower: flower.Flower = this.grid[gridX][gridY];
-    newFlower.x, newFlower.y = gridX, gridY;
-    if (deletionFlag) {
-      this.grid[seedX][seedY] = flower.blankFlower;
+    if (id.includes("save")) {
+      let data = flower.Flower.fromJson(event.dataTransfer.getData("flower-data"));
+      console.log(data);
+      let bindex = this.saved_flowers.indexOf(flower.blankFlower);
+      if (bindex !== -1) {
+        this.saved_flowers[bindex] = data;
+        this.focused_flower = data;
+      }
+      else {
+        this.saved_flowers[indexes[0]] = data;
+        this.focused_flower = data;
+      }
     }
-    Log.info(`Flower ${deletionFlag ? "in position Grid-(" + seedX + "," + seedY + ")": "from Seed Bag"} has been moved to Grid-(${gridX}, ${gridY}).`, "orange");
+    else {
+      let deletionFlag = false;
+      if (drag_type === "area") {
+        deletionFlag = true;
+      }
+      
+      // New location of flower
+      let gridX = parseInt(indexes[0]);
+      let gridY = parseInt(indexes[1]);
+
+      // Old location of flower
+      let ind = event.dataTransfer.getData("flower-id").slice(5).split('-');
+      let seedX = parseInt(ind[0]);
+      let seedY = parseInt(ind[1]);
+      this.grid[gridX][gridY] = flower.Flower.fromJson(event.dataTransfer.getData("flower-data"));
+      let newFlower: flower.Flower = this.grid[gridX][gridY];
+      newFlower.x, newFlower.y = gridX, gridY;
+      if (deletionFlag) {
+        this.grid[seedX][seedY] = flower.blankFlower;
+      }
+      Log.info(`Flower ${deletionFlag ? "in position Grid-(" + seedX + "," + seedY + ")": "from Seed Bag"} has been moved to Grid-(${gridX}, ${gridY}).`, "orange");
+    }
   }
 
   putFlowerInFocus(x, y) {
@@ -304,6 +319,13 @@ export class BreederComponent implements OnInit {
         }
       }
     }
+
+    for (let index in this.saved_flowers) {
+      if (this.saved_flowers[index].parents.includes(this.focused_flower)) {
+        this.saved_flowers[index].parents.splice(this.saved_flowers[index].parents.indexOf(this.focused_flower), 1);
+      }
+    }
+
     Log.info(`${this.focused_flower.color.toUpperCase()} ${this.focused_flower.type.toUpperCase()} in position (${this.focused_flower.x}, ${this.focused_flower.y}) has been deleted.`, "red");
     this.focused_flower = flower.blankFlower;
     this.grid[this.focused_index[0]][this.focused_index[1]] = flower.blankFlower;

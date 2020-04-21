@@ -142,7 +142,7 @@ button {
 }
 
 
-.seed-bags img {
+.seed-bags img, #saved img {
     height: 50px;
 }
 
@@ -207,4 +207,11 @@ button {
 
 #saved {
     height: 70px;
+    background-image: url("../../assets/images/grass.bmp");
+    background-size: 70px 70px;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    border: 10px dotted green;
+    grid-template-columns: repeat(var(--savednum), 1fr);
 }

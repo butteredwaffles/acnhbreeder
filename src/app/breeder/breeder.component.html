@@ -128,8 +128,13 @@
             </div>
         </ng-template>
         <h3 class="button-text">Saved Flowers</h3>
-        <div id="saved" class="seed-bags">
-            
+        <div id="saved" [style.--savednum]="saved_flowers.length" (dragover)="allowDrop($event)" (drop)="onFlowerDropped($event)">
+            <div *ngFor="let flower of saved_flowers; let eleIndex=index;">
+                <div *ngIf="flower !== undefined" [hidden]="flower.type === 'blank'" class="grid-item" id="save-{{eleIndex}}" draggable=true (dragstart)="onFlowerDragged($event)"
+                    attr.data-type="{{ flower.type }}" attr.data-genes="{{flower.genes.red}}{{flower.genes.yellow}}{{flower.genes.white}}{{flower.genes.rose}}">
+                    <img draggable=true (dragstart)="onFlowerDragged($event)" class="grid-imgs" src="{{ flower.image_loc }}">
+                </div>
+            </div>
         </div>
     </div>
         
