@@ -248,20 +248,24 @@ export class BreederComponent implements OnInit {
 
       for (let i = 0; i < this.gridRows; i++) {
         for (let j = 0; j < this.gridColumns; j++) {
-          for (let par of this.grid[i][j].parents) {
-            if (par.opt_id === this.focused_flower.opt_id) {
-              this.focused_children.push(this.grid[i][j]);
+          try {
+            for (let par of this.grid[i][j].parents) {
+              if (par.opt_id === this.focused_flower.opt_id) {
+                this.focused_children.push(this.grid[i][j]);
+              }
             }
-          }
+          } catch {}
         }
       }
 
       let opt_ids = Array.from(this.focused_flower.parents, x => x.opt_id);
       for (let i = 0; i < this.gridRows; i++) {
         for (let j = 0; j < this.gridColumns; j++) {
-          if (opt_ids.includes(this.grid[i][j].opt_id)) {
-            this.focused_parents.push(this.grid[i][j]);
-          }
+          try {
+            if (opt_ids.includes(this.grid[i][j].opt_id)) {
+              this.focused_parents.push(this.grid[i][j]);
+            }
+          } catch {}
         }
       }
 
@@ -389,7 +393,7 @@ export class BreederComponent implements OnInit {
         for (let n = 0; n < values.length-1; n++) {
           let par1: flower.Flower = values[n].pollinated_by;
           let par2: flower.Flower = values[n+1].pollinated_by;
-          let neighboring = Array.from(flower.findNeighbors(this.grid, par1.x, par1.y), two => this.grid[two[0]][two[1]]).includes(par2);
+          let neighboring = Array.from(flower.findNeighbors(this.grid, par1.x, par1.y), two => this.grid[two[0]][two[1]]).filter(x => x !== undefined).includes(par2);
           if (par1.type === par2.type && !par1.has_bred && !par2.has_bred && neighboring) {
             // this spot is free and ready to be breeded
             if (this.grid[x][y].type === flower.FlowerType.Blank) {
