@@ -101,7 +101,6 @@ export class BreederComponent implements OnInit {
   }
 
   onSubmit(gridOptionsData): void {
-    //so the user wont get "error uwu uwu uwu" as soon as they type a fuckle
     this.submitted = true;
 
     // stop here if form is invalid
@@ -116,7 +115,6 @@ export class BreederComponent implements OnInit {
     this.resetGrid();
   }
 
-  //so it doesnt gets hecced on refresh
   onReset() {
     this.submitted = false;
     this.gridOptions.reset();
